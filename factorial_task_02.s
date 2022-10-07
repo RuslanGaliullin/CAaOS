@@ -20,7 +20,7 @@ _factorial:
         sub     rdi, 1      # Уменьшение rdi на 1
         cmp     rdi, 1      
         ja     loop         # Переход к строке 18, если rdi > 1
-    move rsp, rbp
+    mov rsp, rbp
     pop rbp
     ret
 
