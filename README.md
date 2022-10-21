@@ -1,5 +1,7 @@
 ### Шаг № 1
-- Написать программу на С ....
+- Написать программу на С из нескольких единиц компиляции:
+  - main: https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/main.c
+  - Output_input_B: https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Output_input_B.c
 ### Шаг № 2
 - Откомпилировать без оптимизирующих и отладочных опций программу на С.
 
