@@ -156,7 +156,7 @@ main:
         test    eax, eax
         jne     .L10
         mov     rax, QWORD PTR -80[rbp]
-        add     rax, 24
+        add     rax, 16
         mov     rax, QWORD PTR [rax]
         lea     rdx, .LC4[rip]
         mov     rsi, rdx
