@@ -169,8 +169,10 @@ main:
         mov     eax, 3
         jmp     .L9
 .L11:
-        mov     rdi, QWORD PTR -16[rbp]
-        lea     rsi, A[rip]
+        mov     rax, QWORD PTR -16[rbp]
+        lea     rdx, A[rip]
+        mov     rsi, rdx
+        mov     rdi, rax
         call    ReadFromFile@PLT
         mov     DWORD PTR -4[rbp], eax
         cmp     DWORD PTR -4[rbp], -2
@@ -357,3 +359,21 @@ main:
 .LC9:
         .long   0
         .long   1093567618
+        .ident  "GCC: (Ubuntu 11.2.0-19ubuntu1) 11.2.0"
+        .section        .note.GNU-stack,"",@progbits
+        .section        .note.gnu.property,"a"
+        .align 8
+        .long   1f - 0f
+        .long   4f - 1f
+        .long   5
+0:
+        .string "GNU"
+1:
+        .align 8
+        .long   0xc0000002
+        .long   3f - 2f
+2:
+        .long   0x3
+3:
+        .align 8
+4:
