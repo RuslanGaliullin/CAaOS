@@ -2,8 +2,10 @@
 #include <stdlib.h>// для функций rand() и srand()
 #include <string.h>
 #include <time.h>
-int A[10000000];
-int B[10000000];
+#define SIZE_ARRAY 10000000
+
+int A[SIZE_ARRAY];
+int B[SIZE_ARRAY];
 void errMessage1() {
   printf("incorrect command line!\n"
          "  Waited:\n"
@@ -36,16 +38,17 @@ int main(int argc, char *argv[]) {
     errMessage1();
     return 1;
   }
-  int size = 0;
+  int size;
   if (!strcmp(argv[1], "-f")) {
     FILE *ifst = fopen(argv[2], "r");
     if (ifst == NULL) {
-      printf("Cannot open infile. To read\n");
+      printf("Cannot open infile.\n");
       return 3;
     }
     size = ReadFromFile(ifst, A);
+    fclose(ifst);
     if (size == -2) {
-      printf("incorrect numer of figures = %d. Set 0 < number <= 10000000\n", size);
+      printf("incorrect number of elements = %d. Set 0 < number <= 10000000\n", size);
       return 3;
     }
     if (size == -1) {
@@ -54,18 +57,18 @@ int main(int argc, char *argv[]) {
     }
   } else if (!strcmp(argv[1], "-n")) {
     size = strtol(argv[2], NULL, 10);
-    if ((size < 1) || (size > 10000000)) {
-      printf("incorrect numer of figures = %d. Set 0 < number <= 10000000\n", size);
+    if ((size < 1) || (size > SIZE_ARRAY)) {
+      printf("incorrect number of elements = %d. Set 0 < number <= %d\n", size, SIZE_ARRAY);
       return 3;
     }
     srand((unsigned int) (time(0)));
     if (!strcmp(argv[3], "-r")) {
       GenerateRandomArray(size);
+      fprintf(stdout, "Filled array A:\n");
+      Output(stdout, A, size);
     } else if (!strcmp(argv[3], "-c")) {
       InputArrayFromConsole(A, size);
     }
-    fprintf(stdout, "Filled array A:\n");
-    Output(stdout, A, size);
   } else {
     errMessage2();
     return 2;
@@ -81,7 +84,7 @@ int main(int argc, char *argv[]) {
 
   FILE *ofst1 = fopen(argv[argc - 1], "w");
   if (ofst1 == NULL) {
-    printf("Cannot open %s. To write\n", argv[argc - 1]);
+    printf("Cannot open %s to write\n", argv[argc - 1]);
     return 1;
   }
   fprintf(ofst1, "Built array B:\n");
