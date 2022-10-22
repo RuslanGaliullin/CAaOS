@@ -223,16 +223,18 @@ main:                                           # В функции main ест�
         lea     rdx, .LC7[rip]
         mov     rsi, rdx
         mov     rdi, rax
-        call    strcmp@PLT
-        test    eax, eax
-        jne     .L15
+        call    strcmp@PLT                      # В функцию strcmp передается первая строка
+                                                # через регистр rdi, вторая строка .LC7 через регистр rsi
+                                                # Возвращаемое значение сохраняется в rax
+        test    eax, eax                        # Результат функции strcmp в eax. ZF = 1 <=> eax & eax = 0 <=> eax = 0
+        jne     .L15                            # ZF = 0 <=> JNE должно прыгнуть в .L15, иначе продолжаем
         mov     rax, QWORD PTR -64[rbp]
         add     rax, 16                         # Считываем argv[2]
         mov     rax, QWORD PTR [rax]
         mov     edx, 10
         mov     esi, 0
         mov     rdi, rax
-        call    strtol@PLT
+        call    strtol@PLT                      
         mov     DWORD PTR -4[rbp], eax          # Записываем в переменную size результат strtol(argv[2], NULL, 10)
         cmp     DWORD PTR -4[rbp], 0
         jle     .L16
