@@ -21,14 +21,14 @@ B:
         .text
         .globl  errMessage1
         .type   errMessage1, @function
-errMessage1:
+errMessage1:                        # В функции errMessage1 нет формальных параметров
         endbr64
         push    rbp
         mov     rbp, rsp
         lea     rax, .LC0[rip]
         mov     rdi, rax
-        call    puts@PLT
-        nop
+        call    puts@PLT            # Строка .LC0 передана в функцию printf через регистр rdi
+        nop                         # Возвращаемое в eax, но оно не обрабатывается
         pop     rbp
         ret
         .size   errMessage1, .-errMessage1
@@ -39,13 +39,13 @@ errMessage1:
         .text
         .globl  errMessage2
         .type   errMessage2, @function
-errMessage2:
+errMessage2:                        # В функции errMessage2 нет формальных параметров
         endbr64
         push    rbp
         mov     rbp, rsp
-        lea     rax, .LC1[rip]
+        lea     rax, .LC1[rip]      # Строка .LC1 передана в функцию printf через регистр rdi
         mov     rdi, rax
-        call    puts@PLT
+        call    puts@PLT            # Возвращаемое в eax, но оно не обрабатывается
         nop
         pop     rbp
         ret
@@ -57,21 +57,21 @@ errMessage2:
         .text
         .globl  errMessage3
         .type   errMessage3, @function
-errMessage3:
+errMessage3:                        # В функции errMessage3 нет формальных параметров
         endbr64
         push    rbp
         mov     rbp, rsp
-        lea     rax, .LC2[rip]
+        lea     rax, .LC2[rip]      # Строка .LC2 передана в функцию printf через регистр rdi
         mov     rdi, rax
-        call    puts@PLT
+        call    puts@PLT            # Возвращаемое в eax, но оно не обрабатывается
         nop
         pop     rbp
         ret
         .size   errMessage3, .-errMessage3
         .globl  GenerateRandomArray
         .type   GenerateRandomArray, @function
-GenerateRandomArray:
-        endbr64
+GenerateRandomArray:                # В функции GenerateRandomArray есть 1 параметр: int size
+        endbr64                     # Функция его берет из регистра rdi. Ничего не возвращает
         push    rbp
         mov     rbp, rsp
         sub     rsp, 32
@@ -79,7 +79,7 @@ GenerateRandomArray:
         mov     DWORD PTR -4[rbp], 0                # Сохраняем на стеке переменную i = 0 для итерации
         jmp     .L5
 .L6:
-        call    rand@PLT
+        call    rand@PLT            # Функция rand не принимает параметров
         movsx   rdx, eax
         imul    rdx, rdx, 351843721
         shr     rdx, 32
@@ -139,9 +139,9 @@ GenerateRandomArray:
         .text
         .globl  main
         .type   main, @function
-main:
-        endbr64
-        push    rbp
+main:                                           # В функции main есть 2 параметра:   int argc, char *argv[]
+        endbr64                                 # argc берется из регистра rdi
+        push    rbp                             # argv берется из регистра rsi
         mov     rbp, rsp
         sub     rsp, 64
         mov     DWORD PTR -52[rbp], edi         # DWORD PTR -52[rbp] - переменная argc
@@ -152,7 +152,7 @@ main:
         jle     .L9
 .L8:
         mov     eax, 0
-        call    errMessage1
+        call    errMessage1                     # Функция errMessage1 не принимает параметров
         mov     eax, 1
         jmp     .L10
 .L9:
@@ -161,23 +161,25 @@ main:
         mov     rax, QWORD PTR [rax]            # Берем значение argv[1]
         lea     rdx, .LC3[rip]
         mov     rsi, rdx
-        mov     rdi, rax
-        call    strcmp@PLT
-        test    eax, eax
-        jne     .L11
+        mov     rdi, rax                        # В функцию strcmp передается первая строка
+        call    strcmp@PLT                      # через регистр rdi, вторая через регистр rsi.
+        test    eax, eax                        # Результат функции strcmp в eax. ZF = 1 <=> eax & eax = 0 <=> eax = 0
+        jne     .L11                            # ZF = 0 <=> JNE должно прыгнуть в .L11, иначе продолжаем
         mov     rax, QWORD PTR -64[rbp]
         add     rax, 16                         # Берем значение argv[2]
         mov     rax, QWORD PTR [rax]
         lea     rdx, .LC4[rip]
         mov     rsi, rdx
         mov     rdi, rax
-        call    fopen@PLT
+        call    fopen@PLT                       # В функцию strcmp передается первая строка
+                                                # через регистр rdi, вторая строка через регистр rsi
         mov     QWORD PTR -16[rbp], rax         # QWORD PTR -16[rbp] - переменная ifst файлового потока
         cmp     QWORD PTR -16[rbp], 0
         jne     .L12
         lea     rax, .LC5[rip]
         mov     rdi, rax
-        call    puts@PLT
+        call    puts@PLT                         # Строка .LC5 передана в функцию printf через регистр rdi
+                                                 # Возвращаемое в eax, но оно не обрабатывается
         mov     eax, 3
         jmp     .L10
 .L12:
