@@ -4,13 +4,13 @@
         .globl  A
         .bss
         .align 32
-        .type   A, @object
+        .type   A, @object          # Массив А из 100000 интов
         .size   A, 40000000
 A:
         .zero   40000000
         .globl  B
         .align 32
-        .type   B, @object
+        .type   B, @object          # Массив B из 100000 интов
         .size   B, 40000000
 B:
         .zero   40000000
@@ -75,8 +75,8 @@ GenerateRandomArray:
         push    rbp
         mov     rbp, rsp
         sub     rsp, 32
-        mov     DWORD PTR -20[rbp], edi
-        mov     DWORD PTR -4[rbp], 0
+        mov     DWORD PTR -20[rbp], edi             # Сохраняем на стеке переменную size с переданным значением
+        mov     DWORD PTR -4[rbp], 0                # Сохраняем на стеке переменную i = 0 для итерации
         jmp     .L5
 .L6:
         call    rand@PLT
@@ -144,8 +144,8 @@ main:
         push    rbp
         mov     rbp, rsp
         sub     rsp, 64
-        mov     DWORD PTR -52[rbp], edi
-        mov     QWORD PTR -64[rbp], rsi
+        mov     DWORD PTR -52[rbp], edi         # DWORD PTR -52[rbp] - переменная argc
+        mov     QWORD PTR -64[rbp], rsi         # QWORD PTR -64[rbp] - переменная argv
         cmp     DWORD PTR -52[rbp], 3
         jle     .L8
         cmp     DWORD PTR -52[rbp], 5
@@ -158,7 +158,7 @@ main:
 .L9:
         mov     rax, QWORD PTR -64[rbp]
         add     rax, 8
-        mov     rax, QWORD PTR [rax]
+        mov     rax, QWORD PTR [rax]            # Берем значение argv[1]
         lea     rdx, .LC3[rip]
         mov     rsi, rdx
         mov     rdi, rax
@@ -166,13 +166,13 @@ main:
         test    eax, eax
         jne     .L11
         mov     rax, QWORD PTR -64[rbp]
-        add     rax, 16
+        add     rax, 16                         # Берем значение argv[2]
         mov     rax, QWORD PTR [rax]
         lea     rdx, .LC4[rip]
         mov     rsi, rdx
         mov     rdi, rax
         call    fopen@PLT
-        mov     QWORD PTR -16[rbp], rax
+        mov     QWORD PTR -16[rbp], rax         # QWORD PTR -16[rbp] - переменная ifst файлового потока
         cmp     QWORD PTR -16[rbp], 0
         jne     .L12
         lea     rax, .LC5[rip]
@@ -186,7 +186,7 @@ main:
         mov     rsi, rdx
         mov     rdi, rax
         call    ReadFromFile@PLT
-        mov     DWORD PTR -4[rbp], eax
+        mov     DWORD PTR -4[rbp], eax          # Сохранение переменной size = ReadFromFile(ifst, A)
         mov     rax, QWORD PTR -16[rbp]
         mov     rdi, rax
         call    fclose@PLT
@@ -209,7 +209,7 @@ main:
         jmp     .L10
 .L11:
         mov     rax, QWORD PTR -64[rbp]
-        add     rax, 8
+        add     rax, 8                          # Считываем argv[1]
         mov     rax, QWORD PTR [rax]
         lea     rdx, .LC7[rip]
         mov     rsi, rdx
@@ -218,13 +218,13 @@ main:
         test    eax, eax
         jne     .L15
         mov     rax, QWORD PTR -64[rbp]
-        add     rax, 16
+        add     rax, 16                         # Считываем argv[2]
         mov     rax, QWORD PTR [rax]
         mov     edx, 10
         mov     esi, 0
         mov     rdi, rax
         call    strtol@PLT
-        mov     DWORD PTR -4[rbp], eax
+        mov     DWORD PTR -4[rbp], eax          # Записываем в переменную size результат strtol(argv[2], NULL, 10)
         cmp     DWORD PTR -4[rbp], 0
         jle     .L16
         cmp     DWORD PTR -4[rbp], 10000000
@@ -293,8 +293,8 @@ main:
         jmp     .L10
 .L14:
         call    clock@PLT
-        mov     QWORD PTR -24[rbp], rax
-        mov     eax, DWORD PTR -4[rbp]
+        mov     QWORD PTR -24[rbp], rax             # QWORD PTR -24[rbp] - переменная clock_t start
+        mov     eax, DWORD PTR -4[rbp]              # DWORD PTR -4[rbp] - это size
         mov     edx, eax
         lea     rax, A[rip]
         mov     rsi, rax
@@ -302,14 +302,14 @@ main:
         mov     rdi, rax
         call    BuildBArray@PLT
         call    clock@PLT
-        mov     QWORD PTR -32[rbp], rax
+        mov     QWORD PTR -32[rbp], rax             # QWORD PTR -32[rbp] - переменная clock_t end
         mov     rax, QWORD PTR -32[rbp]
         sub     rax, QWORD PTR -24[rbp]
         pxor    xmm0, xmm0
         cvtsi2sd        xmm0, rax
         movsd   xmm1, QWORD PTR .LC12[rip]
         divsd   xmm0, xmm1
-        movsd   QWORD PTR -40[rbp], xmm0
+        movsd   QWORD PTR -40[rbp], xmm0            # QWORD PTR -40[rbp] - переменная double calcTime
         mov     rax, QWORD PTR stdout[rip]
         mov     rcx, rax
         mov     edx, 15
@@ -334,7 +334,7 @@ main:
         mov     rsi, rdx
         mov     rdi, rax
         call    fopen@PLT
-        mov     QWORD PTR -48[rbp], rax
+        mov     QWORD PTR -48[rbp], rax             # QWORD PTR -48[rbp] - переменная ofst1
         cmp     QWORD PTR -48[rbp], 0
         jne     .L19
         mov     eax, DWORD PTR -52[rbp]
@@ -394,21 +394,3 @@ main:
 .LC12:
         .long   0
         .long   1093567618
-        .ident  "GCC: (Ubuntu 11.2.0-19ubuntu1) 11.2.0"
-        .section        .note.GNU-stack,"",@progbits
-        .section        .note.gnu.property,"a"
-        .align 8
-        .long   1f - 0f
-        .long   4f - 1f
-        .long   5
-0:
-        .string "GNU"
-1:
-        .align 8
-        .long   0xc0000002
-        .long   3f - 2f
-2:
-        .long   0x3
-3:
-        .align 8
-4:
