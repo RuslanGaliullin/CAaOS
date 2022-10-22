@@ -9,9 +9,7 @@ void BuildBArray(int B[], int A[], int size) {
   }
 }
 void Output(FILE *ofst, int B[], int size) {
-  fprintf(ofst, "B array contains %d elements.\n", size);
-  int i;
-  for (i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     fprintf(ofst, "%d ", B[i]);
   }
   fprintf(ofst, "\n");
