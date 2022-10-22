@@ -71,7 +71,7 @@ errMessage3:                        # В функции errMessage3 нет фо�
         .globl  GenerateRandomArray
         .type   GenerateRandomArray, @function
 GenerateRandomArray:                # В функции GenerateRandomArray есть 1 параметр: int size
-        endbr64                     # Функция его берет из регистра rdi. Ничего не возвращает
+        endbr64                     # Функция его берет из регистра rdi
         push    rbp
         mov     rbp, rsp
         sub     rsp, 32
@@ -80,7 +80,7 @@ GenerateRandomArray:                # В функции GenerateRandomArray ес
         jmp     .L5
 .L6:
         call    rand@PLT            # Функция rand не принимает параметров
-        movsx   rdx, eax
+        movsx   rdx, eax            # Результат сохраняется в eax
         imul    rdx, rdx, 351843721
         shr     rdx, 32
         sar     edx, 13
@@ -152,8 +152,8 @@ main:                                           # В функции main ест�
         jle     .L9
 .L8:
         mov     eax, 0
-        call    errMessage1                     # Функция errMessage1 не принимает параметров
-        mov     eax, 1
+        call    errMessage1                     # Функция errMessage1 не принимает параметров и
+        mov     eax, 1                          # ничего не возращает
         jmp     .L10
 .L9:
         mov     rax, QWORD PTR -64[rbp]
@@ -173,6 +173,7 @@ main:                                           # В функции main ест�
         mov     rdi, rax
         call    fopen@PLT                       # В функцию strcmp передается первая строка
                                                 # через регистр rdi, вторая строка через регистр rsi
+                                                # Возвращаемое значение сохраняется в rax
         mov     QWORD PTR -16[rbp], rax         # QWORD PTR -16[rbp] - переменная ifst файлового потока
         cmp     QWORD PTR -16[rbp], 0
         jne     .L12
@@ -187,11 +188,15 @@ main:                                           # В функции main ест�
         lea     rdx, A[rip]
         mov     rsi, rdx
         mov     rdi, rax
-        call    ReadFromFile@PLT
+        call    ReadFromFile@PLT                # В функцию ReadFromFile передается указатель типа FILE*
+                                                # через регистр rdi и указатель типа int A[] через rsi
+                                                # Возвращаемое значение в eax 
         mov     DWORD PTR -4[rbp], eax          # Сохранение переменной size = ReadFromFile(ifst, A)
         mov     rax, QWORD PTR -16[rbp]
         mov     rdi, rax
-        call    fclose@PLT
+        call    fclose@PLT                      # В функцию fclose передаётся один указатель типа FILE*
+                                                # через регистр rdi
+                                                # Возвращаемое значение в eax, но оно не обрабатывается
         cmp     DWORD PTR -4[rbp], -2
         jne     .L13
         mov     eax, DWORD PTR -4[rbp]
@@ -199,14 +204,16 @@ main:                                           # В функции main ест�
         lea     rax, .LC6[rip]
         mov     rdi, rax
         mov     eax, 0
-        call    printf@PLT
+        call    printf@PLT                       # Строка .LC6 передана в функцию printf через регистр rdi
+                                                 # Возвращаемое в eax, но оно не обрабатывается
         mov     eax, 3
         jmp     .L10
 .L13:
         cmp     DWORD PTR -4[rbp], -1
         jne     .L14
         mov     eax, 0
-        call    errMessage3
+        call    errMessage3                      # Функция errMessage3 не принимает параметров и
+                                                 # ничего не возращает
         mov     eax, 3
         jmp     .L10
 .L11:
