@@ -1,11 +1,12 @@
+
         .file   "Output_input_B.c"
         .intel_syntax noprefix
         .text
         .globl  BuildBArray
         .type   BuildBArray, @function
-BuildBArray:
-        endbr64
-        push    rbp
+BuildBArray:                                    # Функция BuildBArray принимает 3 параметра:
+        endbr64                                 # int B[], int A[], int size через регистры: rdi, rsi, edx соответственно
+        push    rbp                             # Функция ничего не возвращает
         mov     rbp, rsp
         mov     QWORD PTR -24[rbp], rdi         # QWORD PTR -24[rbp] - переменная int B[]
         mov     QWORD PTR -32[rbp], rsi         # QWORD PTR -32[rbp] - переменная int A[]
@@ -77,9 +78,9 @@ BuildBArray:
         .text
         .globl  Output
         .type   Output, @function
-Output:
-        endbr64
-        push    rbp
+Output:                                             # Функция Output принимает 3 параметра:
+        endbr64                                     # FILE* ofst, int B[], int size через регистры: rdi, rsi, edx
+        push    rbp                                 # Функция ничего не возвращает
         mov     rbp, rsp
         sub     rsp, 48
         mov     QWORD PTR -24[rbp], rdi             # QWORD PTR -24[rbp] - переменная FILE *ofst
@@ -99,7 +100,9 @@ Output:
         mov     rsi, rcx
         mov     rdi, rax
         mov     eax, 0
-        call    fprintf@PLT
+        call    fprintf@PLT                         # В функцию frpintf передаются 3 параметра через регистры
+                                                    # rdi, rsi, edx: FILE* ofst, char* .LC0, int B[i]
+                                                    # Возвращаемый результат сохраняется в eax, но он не используется
         add     DWORD PTR -4[rbp], 1
 .L7:
         mov     eax, DWORD PTR -4[rbp]
@@ -108,7 +111,9 @@ Output:
         mov     rax, QWORD PTR -24[rbp]
         mov     rsi, rax
         mov     edi, 10
-        call    fputc@PLT
+        call    fputc@PLT                           # В функцию fputc передаются 2 параметра через регистры
+                                                    # edi, rsi: int 10 (это '\n'), FILE* ofst
+                                                    # Возвращаемый результат сохраняется в eax, но он не используется
         nop
         leave
         ret
@@ -119,20 +124,23 @@ Output:
         .text
         .globl  ReadFromFile
         .type   ReadFromFile, @function
-ReadFromFile:
-        endbr64
-        push    rbp
+ReadFromFile:                                       # Функция ReadFromFile принимает 2 параметра:
+        endbr64                                     # FILE *fin, int A[] через регистры: rdi, rsi, соответственно
+        push    rbp                                 # Возвращаемое значение сохраняется в eax - код ошибки или размер
+                                                    # считанного массива
         mov     rbp, rsp
         sub     rsp, 32
-        mov     QWORD PTR -24[rbp], rdi                 # QWORD PTR -24[rbp] - переменная FILE *fin
-        mov     QWORD PTR -32[rbp], rsi                 # QWORD PTR -32[rbp] - переменная int A[]
-        lea     rdx, -8[rbp]                            # DWORD PTR -8[rbp] - переменная int size
+        mov     QWORD PTR -24[rbp], rdi             # QWORD PTR -24[rbp] - переменная FILE *fin
+        mov     QWORD PTR -32[rbp], rsi             # QWORD PTR -32[rbp] - переменная int A[]
+        lea     rdx, -8[rbp]                        # DWORD PTR -8[rbp] - переменная int size
         mov     rax, QWORD PTR -24[rbp]
         lea     rcx, .LC1[rip]
         mov     rsi, rcx
         mov     rdi, rax
         mov     eax, 0
-        call    __isoc99_fscanf@PLT
+        call    __isoc99_fscanf@PLT                 # В функцию fscanf передаются 3 параметра через регистры:
+                                                    # rdi, rsi, rdx: FILE *fin, char* .LC1, int* &size
+                                                    # Возвращаемое значение у fscanf в eax.
         cmp     eax, -1
         jne     .L10
         mov     eax, -1
@@ -161,7 +169,9 @@ ReadFromFile:
         mov     rsi, rcx
         mov     rdi, rax
         mov     eax, 0
-        call    __isoc99_fscanf@PLT
+        call    __isoc99_fscanf@PLT                     # В функцию fscanf передаются 3 параметра через регистры:
+                                                        # rdi, rsi, rdx: FILE *fin, char* .LC1, int* &A[i]
+                                                        # Возвращаемое значение у fscanf в eax.
         cmp     eax, -1
         jne     .L15
         mov     eax, -1
@@ -179,12 +189,12 @@ ReadFromFile:
         .size   ReadFromFile, .-ReadFromFile
         .globl  InputArrayFromConsole
         .type   InputArrayFromConsole, @function
-InputArrayFromConsole:
-        endbr64
-        push    rbp
+InputArrayFromConsole:                                  # Функция InputArrayFromConsole принимает 2 параметра:
+        endbr64                                         # int A[], int size через регистры: rdi, esi, соответственно
+        push    rbp                                     # Функция ничего не возвращает
         mov     rbp, rsp
         sub     rsp, 32
-        mov     QWORD PTR -24[rbp], rdi                 # QWORD PTR -24[rbp] - переменная int A[]      
+        mov     QWORD PTR -24[rbp], rdi                 # QWORD PTR -24[rbp] - переменная int A[]
         mov     DWORD PTR -28[rbp], esi                 # DWORD PTR -28[rbp] - переменная int size
         mov     DWORD PTR -4[rbp], 0                    # DWORD PTR -4[rbp] - переменная int i = 0
         jmp     .L19
@@ -198,7 +208,9 @@ InputArrayFromConsole:
         lea     rax, .LC1[rip]
         mov     rdi, rax
         mov     eax, 0
-        call    __isoc99_scanf@PLT
+        call    __isoc99_scanf@PLT                      # В функцию fscanf передаются 2 параметра через регистры:
+                                                        # rdi, rsi: char* .LC1, int* &A[i]
+                                                        # Возвращаемое значение у fscanf в eax, но оно не используется
         add     DWORD PTR -4[rbp], 1
 .L19:
         mov     eax, DWORD PTR -4[rbp]
