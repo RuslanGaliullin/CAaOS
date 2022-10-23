@@ -301,12 +301,13 @@ main:
         lea     rax, B[rip]
         mov     rdi, rax
         mov     r8d, 1
-        .Cycle:
+ .Cycle:
+        add     r8d, 1
         call    BuildBArray@PLT                 
                                                 
                                                 
-        cmp r8d, 100
-        jne .Cycle
+        cmp     r8d, 100
+        jne      .Cycle
         call    clock@PLT   
         call    clock@PLT
         mov     QWORD PTR -32[rbp], rax             # QWORD PTR -32[rbp] - переменная clock_t end
