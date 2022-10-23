@@ -91,7 +91,7 @@
         
   - Обрабатываются введенные параметры с помощью argc, argv
 ### Шаг № 2. Сравнение скорости
-  - Сравним скорость программы, которая было создана без оптимизации с параметрами из [пункта](https://github.com/RuslanGaliullin/CAaOS/edit/PHW_01/README.md#шаг--2-в-ассемблер) в начале, но с циклом, который выполняет построение массива B 100 раз, запустив [main_no_opt.out](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/main_no_opt.out). Это исполняемый файл создан при компиляции файлов [Main_no_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_cycle_no_opt.s) и [Output_input_B_not_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Output_input_cycle_no_opt.s)
+  - Сравним скорость программы, которая было создана без оптимизации с параметрами из [пункта](https://github.com/RuslanGaliullin/CAaOS/edit/PHW_01/README.md#шаг--2-в-ассемблер) в начале, но с циклом, который выполняет построение массива B 100 раз, запустив [main_no_opt.out](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/main_no_opt.out). Этот исполняемый файл создан при компиляции файлов [Main_no_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_cycle_no_opt.s) и [Output_input_B_not_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Output_input_cycle_no_opt.s)
     
     P.S. Это те же файлы из первого пунтка, только с добавлением цикла:
                 
