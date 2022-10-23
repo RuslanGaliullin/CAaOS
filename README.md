@@ -110,7 +110,7 @@
                 add     r8d, 1
                 cmp     r8d, 100
                 jne     Cycle          
-  - Вторая программа будет [main_opt.out](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/main_opt.out) скомиплированая из [main_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_with_cycle_opt.s) и [Output_input_B_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Output_input_B_opt.s). Последняя программа также строит массив B 100 раз + время замеряется только на этом цикле
+  - Вторая программа будет [main_opt.out](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/main_opt.out) скомиплированная из [main_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_with_cycle_opt.s) и [Output_input_B_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Output_input_B_opt.s). Последняя программа также строит массив B 100 раз + время замеряется только на этом цикле
   - Результаты запуска на время с параметрами **-n 10000000 -r test/test01.out**: 
  
  |     | main_opt.out (оптимизация регистрами) | main_no_opt.out (без какой либо оптимизации)|
