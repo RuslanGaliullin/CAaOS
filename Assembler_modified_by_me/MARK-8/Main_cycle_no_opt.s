@@ -293,19 +293,18 @@ main:
         jmp     .L10
 .L14:
         call    clock@PLT
+        mov     r8d, 1
         mov     QWORD PTR -24[rbp], rax             # QWORD PTR -24[rbp] - переменная clock_t start
+.Cycle:
         mov     eax, DWORD PTR -4[rbp]              # DWORD PTR -4[rbp] - это size
         mov     edx, eax
         lea     rax, A[rip]
         mov     rsi, rax
         lea     rax, B[rip]
         mov     rdi, rax
-        mov     r8d, 1
- .Cycle:
-        add     r8d, 1
         call    BuildBArray@PLT                 
                                                 
-                                                
+        add     r8d, 1                                    
         cmp     r8d, 100
         jne      .Cycle
         call    clock@PLT   
