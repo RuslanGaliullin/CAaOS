@@ -39,8 +39,8 @@
 - Как можно заметить по скриншоту и ожидаемому выводу, обе программы дают одинаковый, а главное правильный результат
 ## На оценку 5
 ### Шаг № 1. Функции
-  - Используемые функции с передачей параметров: GenerateRandomArray, strcmp, fopen, printf, ReadFromFile, fclose, strtol, time, srand, GenerateRandomArray, fprintf, Output, InputArrayFromConsole, BuildBArray. 
-  - Локальные переменные: int size, int i, FILE *ifst, clock_t start, clock_t end, double calcTime, FILE * ofst1
+  - Используемые функции с передачей параметров: GenerateRandomArray, strcmp, fopen, printf, ReadFromFile, fclose, strtol, time, srand, GenerateRandomArray, fprintf, Output, InputArrayFromConsole, BuildBArray
+  - Локальные переменные: int size, int i, FILE *ifst, clock_t start, clock_t end, double calcTime, FILE * ofst1 (не писал переменные, создаваемые при передачи параметров по значению)
   - Файлы с комментарием вызовов функций:
     - [main.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-5/MAIN_w_comm.s)
     - [Output_input_B.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-5/Output_input_w_comm.s)
