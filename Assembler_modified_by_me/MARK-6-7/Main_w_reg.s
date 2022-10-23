@@ -71,12 +71,12 @@ errMessage3:                        # В функции errMessage3 нет фо�
         .globl  GenerateRandomArray
         .type   GenerateRandomArray, @function
 GenerateRandomArray:                # В функции GenerateRandomArray есть 1 параметр: int size
-        endbr64                     # Функция его берет из регистра rdi. Ничего не возвращает
+        endbr64                             # Функция его берет из регистра rdi. Ничего не возвращает
         push    rbp
         mov     rbp, rsp
         sub     rsp, 32
-        mov     DWORD PTR -20[rbp], edi             # Сохраняем на стеке переменную size с переданным значением
-        mov     DWORD PTR -4[rbp], 0                # Сохраняем на стеке переменную i = 0 для итерации
+        mov     r14d, edi                    # Сохраняем на в регистр r14d переменную size с переданным значением
+        mov     r15d, 0                      # Сохраняем на в регистр r15d переменную i = 0 для итерации
         jmp     .L5
 .L6:
         call    rand@PLT            # Функция rand не принимает параметров
@@ -90,15 +90,14 @@ GenerateRandomArray:                # В функции GenerateRandomArray ес
         imul    ecx, edx, 100000
         sub     eax, ecx
         mov     edx, eax
-        mov     eax, DWORD PTR -4[rbp]
+        mov     eax, r15d
         cdqe
         lea     rcx, 0[0+rax*4]
         lea     rax, A[rip]
         mov     DWORD PTR [rcx+rax], edx
-        add     DWORD PTR -4[rbp], 1
+        add     r15d, 1
 .L5:
-        mov     eax, DWORD PTR -4[rbp]
-        cmp     eax, DWORD PTR -20[rbp]
+        cmp     r15d, r14d
         jl      .L6
         nop
         nop
