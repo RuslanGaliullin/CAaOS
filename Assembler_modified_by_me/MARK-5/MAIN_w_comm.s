@@ -28,7 +28,7 @@ errMessage1:                        # В функции errMessage1 нет фо�
         lea     rax, .LC0[rip]
         mov     rdi, rax
         call    puts@PLT            # Строка .LC0 передана в функцию printf через регистр rdi
-        nop                         # Возвращаемое в eax, но оно не обрабатывается
+        nop                         # Возвращаемый результат в eax, но он не используется
         pop     rbp
         ret
         .size   errMessage1, .-errMessage1
@@ -45,7 +45,7 @@ errMessage2:                        # В функции errMessage2 нет фо�
         mov     rbp, rsp
         lea     rax, .LC1[rip]      # Строка .LC1 передана в функцию printf через регистр rdi
         mov     rdi, rax
-        call    puts@PLT            # Возвращаемое в eax, но оно не обрабатывается
+        call    puts@PLT            # Возвращаемый результат в eax, но он не используется
         nop
         pop     rbp
         ret
@@ -63,7 +63,7 @@ errMessage3:                        # В функции errMessage3 нет фо�
         mov     rbp, rsp
         lea     rax, .LC2[rip]      # Строка .LC2 передана в функцию printf через регистр rdi
         mov     rdi, rax
-        call    puts@PLT            # Возвращаемое в eax, но оно не обрабатывается
+        call    puts@PLT            # Возвращаемый результат в eax, но он не используется
         nop
         pop     rbp
         ret
@@ -71,7 +71,7 @@ errMessage3:                        # В функции errMessage3 нет фо�
         .globl  GenerateRandomArray
         .type   GenerateRandomArray, @function
 GenerateRandomArray:                # В функции GenerateRandomArray есть 1 параметр: int size
-        endbr64                     # Функция его берет из регистра rdi
+        endbr64                     # Функция его берет из регистра rdi. Ничего не возвращает
         push    rbp
         mov     rbp, rsp
         sub     rsp, 32
@@ -80,7 +80,7 @@ GenerateRandomArray:                # В функции GenerateRandomArray ес
         jmp     .L5
 .L6:
         call    rand@PLT            # Функция rand не принимает параметров
-        movsx   rdx, eax            # Результат сохраняется в eax
+        movsx   rdx, eax
         imul    rdx, rdx, 351843721
         shr     rdx, 32
         sar     edx, 13
@@ -152,8 +152,9 @@ main:                                           # В функции main ест�
         jle     .L9
 .L8:
         mov     eax, 0
-        call    errMessage1                     # Функция errMessage1 не принимает параметров и
-        mov     eax, 1                          # ничего не возращает
+        call    errMessage1                     # Функция errMessage1 не принимает параметров
+                                                # Функция ничего не возвращает
+        mov     eax, 1
         jmp     .L10
 .L9:
         mov     rax, QWORD PTR -64[rbp]
@@ -161,8 +162,8 @@ main:                                           # В функции main ест�
         mov     rax, QWORD PTR [rax]            # Берем значение argv[1]
         lea     rdx, .LC3[rip]
         mov     rsi, rdx
-        mov     rdi, rax                        # В функцию strcmp передается первая строка
-        call    strcmp@PLT                      # через регистр rdi, вторая через регистр rsi.
+        mov     rdi, rax                        # В функцию strcmp передается char* argv[2]
+        call    strcmp@PLT                      # через регистр rdi, char* .LC3 через регистр rsi.
         test    eax, eax                        # Результат функции strcmp в eax. ZF = 1 <=> eax & eax = 0 <=> eax = 0
         jne     .L11                            # ZF = 0 <=> JNE должно прыгнуть в .L11, иначе продолжаем
         mov     rax, QWORD PTR -64[rbp]
@@ -171,16 +172,16 @@ main:                                           # В функции main ест�
         lea     rdx, .LC4[rip]
         mov     rsi, rdx
         mov     rdi, rax
-        call    fopen@PLT                       # В функцию strcmp передается первая строка
-                                                # через регистр rdi, вторая строка через регистр rsi
-                                                # Возвращаемое значение сохраняется в rax
-        mov     QWORD PTR -16[rbp], rax         # QWORD PTR -16[rbp] - переменная ifst файлового потока
+        call    fopen@PLT                       # В функцию strcmp передается char* argv[2]
+                                                # через регистр rdi, char* .LC4 через регистр rsi
+                                                # Возвращаемый результат в rax
+        mov     QWORD PTR -16[rbp], rax         # QWORD PTR -16[rbp] - переменная FILE* ifst файлового потока
         cmp     QWORD PTR -16[rbp], 0
         jne     .L12
         lea     rax, .LC5[rip]
         mov     rdi, rax
         call    puts@PLT                         # Строка .LC5 передана в функцию printf через регистр rdi
-                                                 # Возвращаемое в eax, но оно не обрабатывается
+                                                 # Возвращаемый результат в eax, но он не используется
         mov     eax, 3
         jmp     .L10
 .L12:
@@ -188,15 +189,15 @@ main:                                           # В функции main ест�
         lea     rdx, A[rip]
         mov     rsi, rdx
         mov     rdi, rax
-        call    ReadFromFile@PLT                # В функцию ReadFromFile передается указатель типа FILE*
-                                                # через регистр rdi и указатель типа int A[] через rsi
-                                                # Возвращаемое значение в eax 
+        call    ReadFromFile@PLT                # В функцию передаются 2 параметра через
+                                                # регистры rdi и rsi: FILE* ifst, int A[]
+                                                # сохраняется возвращаемый результат в eax
         mov     DWORD PTR -4[rbp], eax          # Сохранение переменной size = ReadFromFile(ifst, A)
         mov     rax, QWORD PTR -16[rbp]
         mov     rdi, rax
-        call    fclose@PLT                      # В функцию fclose передаётся один указатель типа FILE*
-                                                # через регистр rdi
-                                                # Возвращаемое значение в eax, но оно не обрабатывается
+        call    fclose@PLT                      # В функцию fclose передается 1 параметр через
+                                                # регистр rdi: FILE* ifst
+                                                # сохраняется возвращаемый результат в eax, но не используется дальше
         cmp     DWORD PTR -4[rbp], -2
         jne     .L13
         mov     eax, DWORD PTR -4[rbp]
@@ -204,16 +205,16 @@ main:                                           # В функции main ест�
         lea     rax, .LC6[rip]
         mov     rdi, rax
         mov     eax, 0
-        call    printf@PLT                       # Строка .LC6 передана в функцию printf через регистр rdi
-                                                 # Возвращаемое в eax, но оно не обрабатывается
+        call    printf@PLT                      # Строка .LC6 передана в функцию printf через регистр rdi
+                                                # Возвращаемый результат в eax, но он не используется
         mov     eax, 3
         jmp     .L10
 .L13:
         cmp     DWORD PTR -4[rbp], -1
         jne     .L14
         mov     eax, 0
-        call    errMessage3                      # Функция errMessage3 не принимает параметров и
-                                                 # ничего не возращает
+        call    errMessage3                     # Функция errMessage3 не принимает параметров
+                                                # Функция ничего не возвращает
         mov     eax, 3
         jmp     .L10
 .L11:
@@ -222,19 +223,21 @@ main:                                           # В функции main ест�
         mov     rax, QWORD PTR [rax]
         lea     rdx, .LC7[rip]
         mov     rsi, rdx
-        mov     rdi, rax
-        call    strcmp@PLT                      # В функцию strcmp передается первая строка
-                                                # через регистр rdi, вторая строка .LC7 через регистр rsi
-                                                # Возвращаемое значение сохраняется в rax
-        test    eax, eax                        # Результат функции strcmp в eax. ZF = 1 <=> eax & eax = 0 <=> eax = 0
-        jne     .L15                            # ZF = 0 <=> JNE должно прыгнуть в .L15, иначе продолжаем
+        mov     rdi, rax                        # В функцию strcmp передаются 2 параметра через
+        call    strcmp@PLT                      # регистры rdi, rsi: char* argv[1], char* .LC7
+                                                # Результат функции strcmp в eax. ZF = 1 <=> eax & eax = 0 <=> eax = 0
+                                                # ZF = 0 <=> JNE должно прыгнуть в .L15, иначе продолжаем
+        test    eax, eax
+        jne     .L15
         mov     rax, QWORD PTR -64[rbp]
         add     rax, 16                         # Считываем argv[2]
         mov     rax, QWORD PTR [rax]
         mov     edx, 10
         mov     esi, 0
         mov     rdi, rax
-        call    strtol@PLT                      
+        call    strtol@PLT                      # В функцию передаются 3 параметра через
+                                                # регистры rdi, rsi, rdx: char* argv[2], NULL и int 10
+                                                # Возвращаемое значение сохраняется в регистре eax
         mov     DWORD PTR -4[rbp], eax          # Записываем в переменную size результат strtol(argv[2], NULL, 10)
         cmp     DWORD PTR -4[rbp], 0
         jle     .L16
@@ -247,39 +250,45 @@ main:                                           # В функции main ест�
         lea     rax, .LC8[rip]
         mov     rdi, rax
         mov     eax, 0
-        call    printf@PLT
+        call    printf@PLT                      # Строка char* .LC8 передана в функцию printf через регистр rdi
+                                                # Возвращаемый результат в eax, но он не используется
         mov     eax, 3
         jmp     .L10
 .L17:
         mov     edi, 0
-        call    time@PLT
-        mov     edi, eax
-        call    srand@PLT
-        mov     rax, QWORD PTR -64[rbp]
+        call    time@PLT                        # Через регистр rdi в функцию time передается int 0
+        mov     edi, eax                        # Возвращаемый результат сохраняется в регистр eax
+        call    srand@PLT                       # В функцию scrand передается значение time(0) через rdi
+        mov     rax, QWORD PTR -64[rbp]         # в функции scrand нет возвращаемого значения
         add     rax, 24
         mov     rax, QWORD PTR [rax]
         lea     rdx, .LC9[rip]
         mov     rsi, rdx
         mov     rdi, rax
-        call    strcmp@PLT
+        call    strcmp@PLT                      # В функцию strcmp передаются 2 параметра через rdi, rsi: char* argv[3], char* .LC9
+                                                # Результат функции strcmp в eax. ZF = 1 <=> eax & eax = 0 <=> eax = 0
+                                                # ZF = 0 <=> JNE должно прыгнуть в .L18, иначе продолжаем
         test    eax, eax
         jne     .L18
         mov     eax, DWORD PTR -4[rbp]
         mov     edi, eax
-        call    GenerateRandomArray
+        call    GenerateRandomArray             # В функцию GenerateRandomArray 1 аргумент через rdi: int size
         mov     rax, QWORD PTR stdout[rip]
         mov     rcx, rax
         mov     edx, 16
         mov     esi, 1
         lea     rax, .LC10[rip]
         mov     rdi, rax
-        call    fwrite@PLT
+        call    fwrite@PLT                      # В fwrite передаются 2 параметра через rdi, rsi: stdout, char* .LC10
+                                                # возвращаемое значение сохраняется в eax, но не используется
         mov     rax, QWORD PTR stdout[rip]
         mov     edx, DWORD PTR -4[rbp]
         lea     rcx, A[rip]
         mov     rsi, rcx
         mov     rdi, rax
-        call    Output@PLT
+        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, rdx:
+                                                # stdout, int A[], int size
+                                                # Возвращаемого значения у функции нет
         jmp     .L14
 .L18:
         mov     rax, QWORD PTR -64[rbp]
@@ -288,22 +297,28 @@ main:                                           # В функции main ест�
         lea     rdx, .LC11[rip]
         mov     rsi, rdx
         mov     rdi, rax
-        call    strcmp@PLT
+        call    strcmp@PLT                      # В функцию strcmp передаются 2 параметра через rdi, rsi: char* argv[3], char* .LC11
+                                                # Результат функции strcmp в eax. ZF = 1 <=> eax & eax = 0 <=> eax = 0
+                                                # ZF = 0 <=> JNE должно прыгнуть в .L14, иначе продолжаем 
         test    eax, eax
         jne     .L14
         mov     eax, DWORD PTR -4[rbp]
         mov     esi, eax
         lea     rax, A[rip]
         mov     rdi, rax
-        call    InputArrayFromConsole@PLT
+        call    InputArrayFromConsole@PLT       # В функцию InputArrayFromConsole передаются 2 параметра
+                                                # через регистры rdi, rsi: int A[], int size
+                                                # Возвращаемого значения у функции нет
         jmp     .L14
 .L15:
         mov     eax, 0
-        call    errMessage2
+        call    errMessage2                     # Функция errMessage2 не принимает параметров
+                                                # Функция ничего не возвращает
         mov     eax, 2
         jmp     .L10
 .L14:
-        call    clock@PLT
+        call    clock@PLT                       # Функция clock не принимает параметров
+                                                # Возвращаемый результат сохраняется в rax
         mov     QWORD PTR -24[rbp], rax             # QWORD PTR -24[rbp] - переменная clock_t start
         mov     eax, DWORD PTR -4[rbp]              # DWORD PTR -4[rbp] - это size
         mov     edx, eax
@@ -311,8 +326,11 @@ main:                                           # В функции main ест�
         mov     rsi, rax
         lea     rax, B[rip]
         mov     rdi, rax
-        call    BuildBArray@PLT
-        call    clock@PLT
+        call    BuildBArray@PLT                 # В BuildBArray передаются 3 параметра через регистры
+                                                # rdi, rsi, rdx: int B[], int A[], int size
+                                                # Функция ничего не возвращает
+        call    clock@PLT                       # Функция clock не принимает параметров
+                                                # Возвращаемый результат сохраняется в rax
         mov     QWORD PTR -32[rbp], rax             # QWORD PTR -32[rbp] - переменная clock_t end
         mov     rax, QWORD PTR -32[rbp]
         sub     rax, QWORD PTR -24[rbp]
@@ -327,13 +345,16 @@ main:                                           # В функции main ест�
         mov     esi, 1
         lea     rax, .LC13[rip]
         mov     rdi, rax
-        call    fwrite@PLT
+        call    fwrite@PLT                      # Строка .LC13 передана в функцию printf через регистр rdi
+                                                # Возвращаемый результат в eax, но он не используется
         mov     rax, QWORD PTR stdout[rip]
         mov     edx, DWORD PTR -4[rbp]
         lea     rcx, B[rip]
         mov     rsi, rcx
-        mov     rdi, rax
-        call    Output@PLT
+        mov     rdi, rax   
+        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, rdx:
+                                                # stdout, int B[], int size
+                                                # Возвращаемого значения у функции нет                 
         mov     eax, DWORD PTR -52[rbp]
         cdqe
         sal     rax, 3
@@ -344,7 +365,9 @@ main:                                           # В функции main ест�
         lea     rdx, .LC14[rip]
         mov     rsi, rdx
         mov     rdi, rax
-        call    fopen@PLT
+        call    fopen@PLT                       # В функцию strcmp передается char* argv[argc - 1]
+                                                # через регистр rdi, char* .LC14 через регистр rsi
+                                                # Возвращаемый результат в rax
         mov     QWORD PTR -48[rbp], rax             # QWORD PTR -48[rbp] - переменная ofst1
         cmp     QWORD PTR -48[rbp], 0
         jne     .L19
@@ -359,7 +382,8 @@ main:                                           # В функции main ест�
         lea     rax, .LC15[rip]
         mov     rdi, rax
         mov     eax, 0
-        call    printf@PLT
+        call    printf@PLT                      # D функцию printf передается 1 параметра через регистр rdi: char* LC15
+                                                # Возвращаемый результат сохраняется в eax, но он не используется
         mov     eax, 1
         jmp     .L10
 .L19:
@@ -369,13 +393,17 @@ main:                                           # В функции main ест�
         mov     esi, 1
         lea     rax, .LC13[rip]
         mov     rdi, rax
-        call    fwrite@PLT
+        call    fwrite@PLT                      # В функцию fwrite передается 2 параметра через регистры
+                                                # rdi, rsi: File* ofst1, char* .LC13
+                                                # Возвращаемый результат сохраняется в eax, но он не используется
         mov     edx, DWORD PTR -4[rbp]
         mov     rax, QWORD PTR -48[rbp]
         lea     rcx, B[rip]
         mov     rsi, rcx
         mov     rdi, rax
-        call    Output@PLT
+        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, rdx:
+                                                # File* ofst1, int B[], int size
+                                                # Возвращаемого значения у функции нет
         mov     rax, QWORD PTR stdout[rip]
         mov     rdx, QWORD PTR -40[rbp]
         movq    xmm0, rdx
@@ -383,7 +411,9 @@ main:                                           # В функции main ест�
         mov     rsi, rdx
         mov     rdi, rax
         mov     eax, 1
-        call    fprintf@PLT
+        call    fprintf@PLT                     # В функцию frpintf передаются 3 параметра через регистры
+                                                # rdi, rsi, xmm0: stdout, char* .LC16, double calcTime
+                                                # Возвращаемый результат сохраняется в eax, но он не используется
         mov     rdx, QWORD PTR -40[rbp]
         mov     rax, QWORD PTR -48[rbp]
         movq    xmm0, rdx
@@ -391,10 +421,14 @@ main:                                           # В функции main ест�
         mov     rsi, rdx
         mov     rdi, rax
         mov     eax, 1
-        call    fprintf@PLT
+        call    fprintf@PLT                     # В функцию frpintf передаются 3 параметра через регистры
+                                                # rdi, rsi, xmm0: File* ofst1, char* .LC17, double calcTime
+                                                # Возвращаемый результат сохраняется в eax, но он не используется
         mov     rax, QWORD PTR -48[rbp]
         mov     rdi, rax
-        call    fclose@PLT
+        call    fclose@PLT                      # В функцию fclose передается 1 параметр через
+                                                # регистр rdi: FILE* ofst1
+                                                # сохраняется возвращаемый результат в eax, но не используется дальше
         mov     eax, 0
 .L10:
         leave
