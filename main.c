@@ -38,14 +38,14 @@ int main(int argc, char *argv[]) {
     errMessage1();
     return 1;
   }
-  int size;
+  int size; ///
   if (!strcmp(argv[1], "-f")) {
-    FILE *ifst = fopen(argv[2], "r");
+    FILE *ifst = fopen(argv[2], "r");///
     if (ifst == NULL) {
       printf("Cannot open infile.\n");
       return 3;
     }
-    size = ReadFromFile(ifst, A);
+    size = ReadFromFile(ifst, A);///
     fclose(ifst);
     if (size == -2) {
       printf("incorrect number of elements = %d. Set 0 < number <= 10000000\n", size);
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
       return 3;
     }
   } else if (!strcmp(argv[1], "-n")) {
-    size = strtol(argv[2], NULL, 10);
+    size = strtol(argv[2], NULL, 10);///
     if ((size < 1) || (size > SIZE_ARRAY)) {
       printf("incorrect number of elements = %d. Set 0 < number <= %d\n", size, SIZE_ARRAY);
       return 3;
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
   fprintf(stdout, "Built array B:\n");
   Output(stdout, B, size);
 
-  FILE *ofst1 = fopen(argv[argc - 1], "w");
+  FILE * ofst1 = fopen(argv[argc - 1], "w");
   if (ofst1 == NULL) {
     printf("Cannot open %s to write\n", argv[argc - 1]);
     return 1;
@@ -95,3 +95,4 @@ int main(int argc, char *argv[]) {
   fclose(ofst1);
   return 0;
 }
+
