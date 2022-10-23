@@ -79,10 +79,63 @@
 ## На оценку 8
 ### Шаг № 1. Подключить генератор рандомных чисел
   - В файле [main.c](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/main.c), также можно посмотреть в [main.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_with_cycle_opt.s)
-
-
-      void GenerateRandomArray(int size)  {
-          for (int i = 0; i < size; ++i)  {
-              A[i] = rand() % 100000;
+ 
+        void GenerateRandomArray(int size) {
+          for (int i = 0; i < size; ++i) {
+            A[i] = rand() % 100000;
           }
-      }
+        }
+  - Для генерации случайного набора используется команда 
+
+        command -n number -r outfile
+        
+  - Обрабатываются введенные параметры с помощью argc, argv
+### Шаг № 2. Сравнение скорости
+  - Сравним скорость программы, которая было создана без оптимизации с параметрами из [пункта](https://github.com/RuslanGaliullin/CAaOS/edit/PHW_01/README.md#шаг--2-в-ассемблер) с циклом, который выполняет построение массива B 100 раз, запустив [main_no_opt.out](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/main_no_opt.out). Это исполняемый файл создан при компиляции файлов [Main_no_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_cycle_no_opt.s) и [Output_input_B_not_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Output_input_cycle_no_opt.s)
+    
+    P.S. Это те же файлы из первого пунтка, только с добавлением цикла:
+                
+                mov     r8d, 1
+                mov     QWORD PTR -24[rbp], rax             # QWORD PTR -24[rbp] - переменная clock_t start
+        Cycle:
+                mov     eax, DWORD PTR -4[rbp]              # DWORD PTR -4[rbp] - это size
+                mov     edx, eax
+                lea     rax, A[rip]
+                mov     rsi, rax
+                lea     rax, B[rip]
+                mov     rdi, rax
+                call    BuildBArray@PLT                 # В BuildBArray передаются 3 параметра через регистры
+                                                # rdi, rsi, edx: int B[], int A[], int size
+                                                # Функция ничего не возвращает
+                add     r8d, 1
+                cmp     r8d, 100
+                jne     Cycle          
+  - Вторая программа будет [main_opt.out](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/main_opt.out) скомиплированая из [main_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_with_cycle_opt.s) и [Output_input_B_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Output_input_B_opt.s). Последняя программа также строит массив B 100 раз + время замеряется только на этом цикле
+  - Результаты запуска на время с параметрами **-n 10000000 -r test/test01.out**: 
+ 
+ |     | main_opt.out (оптимизация регистрами) | main_no_opt.out (без какой либо оптимизации)|
+ |:-----:|:---------------------------------------:|:---------------------------------------------:|
+ |Команда|./main_opt.out -n 10000000 -r test/test_opt.out|./main_no_opt.out -n 10000000 -r test/test_no_opt.out|
+ |Время|Calculation time = 2.60638|Calculation time = 2.94435|
+ |Пруфы|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_opt_time.png)|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/No_opt_time.png)|
+ 
+ - Вывод: у нас удалось улучшить скорость работы алогоритма за счет использования регистров вместо памяти на стеке
+ ## На оценку 9
+ ### Шаг № 1. Сравнение времени работы
+ 
+ | Параметр | Время работы | Скрин |
+ |:--:|:---:|:---:|
+ |-O1|Calculation time = 0.032683|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O1.png)|
+ |-O2|Calculation time = 0.034351|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O2.png)|
+ |-O3|Calculation time = 0.032118|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O3.png)|
+ |-Ofast|Calculation time = 0.029173|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-Ofast.png)|
+ |-O0|Calculation time = 0.039069|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O0.png)|
+ |-Os|Calculation time = 0.028374| ![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-Os.png)|
+ 
+### Шаг № 2. Сравнение размера кода на ассемблере
+| Параметр | Количество строк | Скрин |
+ |:--:|:---:|:---:|
+ |без параметров|Calculation time = 0.032683|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O1.png)|
+ |-ffunction-sections -Wl --gc-sections|Calculation time = 0.034351|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O2.png)|
+ |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|Calculation time = 0.032118|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O3.png)|
+ |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 0.029173|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-Ofast.png)|
