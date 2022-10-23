@@ -401,8 +401,7 @@ main:                                           # В функции main ест�
         lea     rcx, B[rip]
         mov     rsi, rcx
         mov     rdi, rax
-        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, e
-        dx:
+        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, edx:
                                                 # File* ofst1, int B[], int size
                                                 # Возвращаемого значения у функции нет
         mov     rax, QWORD PTR stdout[rip]
