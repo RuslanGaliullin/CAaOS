@@ -286,7 +286,7 @@ main:                                           # В функции main ест�
         lea     rcx, A[rip]
         mov     rsi, rcx
         mov     rdi, rax
-        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, rdx:
+        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, edx:
                                                 # stdout, int A[], int size
                                                 # Возвращаемого значения у функции нет
         jmp     .L14
@@ -327,7 +327,7 @@ main:                                           # В функции main ест�
         lea     rax, B[rip]
         mov     rdi, rax
         call    BuildBArray@PLT                 # В BuildBArray передаются 3 параметра через регистры
-                                                # rdi, rsi, rdx: int B[], int A[], int size
+                                                # rdi, rsi, edx: int B[], int A[], int size
                                                 # Функция ничего не возвращает
         call    clock@PLT                       # Функция clock не принимает параметров
                                                 # Возвращаемый результат сохраняется в rax
@@ -352,7 +352,7 @@ main:                                           # В функции main ест�
         lea     rcx, B[rip]
         mov     rsi, rcx
         mov     rdi, rax
-        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, rdx:
+        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, edx:
                                                 # stdout, int B[], int size
                                                 # Возвращаемого значения у функции нет
         mov     eax, DWORD PTR -52[rbp]
@@ -401,7 +401,8 @@ main:                                           # В функции main ест�
         lea     rcx, B[rip]
         mov     rsi, rcx
         mov     rdi, rax
-        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, rdx:
+        call    Output@PLT                      # В Output передаются 3 параметра через rdi, rsi, e
+        dx:
                                                 # File* ofst1, int B[], int size
                                                 # Возвращаемого значения у функции нет
         mov     rax, QWORD PTR stdout[rip]
