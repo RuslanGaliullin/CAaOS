@@ -4,13 +4,13 @@
         .globl  A
         .bss
         .align 32
-        .type   A, @object          # Массив А из 100000 интов
+        .type   A, @object          # Массив А из 10000000 интов
         .size   A, 40000000
 A:
         .zero   40000000
         .globl  B
         .align 32
-        .type   B, @object          # Массив B из 100000 интов
+        .type   B, @object          # Массив B из 10000000 интов
         .size   B, 40000000
 B:
         .zero   40000000
