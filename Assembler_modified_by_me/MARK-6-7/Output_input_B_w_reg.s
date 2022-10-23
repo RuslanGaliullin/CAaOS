@@ -83,10 +83,10 @@ Output:                                             # Функция Output пр
         push    rbp                                 # Функция ничего не возвращает
         mov     rbp, rsp
         sub     rsp, 48
-        mov     QWORD PTR -24[rbp], rdi             # в r12 лежит переменная FILE *ofst
-        mov     QWORD PTR -32[rbp], rsi             # в r13 лежит переменная int B[]
-        mov     DWORD PTR -36[rbp], edx             # в r14d лежит переменная int size
-        mov     DWORD PTR -4[rbp], 0                # в r15d лежит переменная int i = 0
+        mov     r12, rdi                            # в r12 лежит переменная FILE *ofst
+        mov     r13, rsi                            # в r13 лежит переменная int B[]
+        mov     r14d, edx                           # в r14d лежит переменная int size
+        mov     r15d, 0                             # в r15d лежит переменная int i = 0
         jmp     .L7
 .L8:
         mov     eax, r15d
