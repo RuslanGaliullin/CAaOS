@@ -122,20 +122,22 @@
  - Вывод: у нас удалось улучшить скорость работы алогоритма за счет использования регистров вместо памяти на стеке
  ## На оценку 9
  ### Шаг № 1. Сравнение времени работы
+ - [Скрины](https://github.com/RuslanGaliullin/CAaOS/tree/PHW_01/data)
  
- | Параметр | Время работы | Скрин |
+ | Параметры | Время работы |  Количество строк (main.s + Output_input_B.s) |
  |:--:|:---:|:---:|
- |-O1|Calculation time = 0.032683|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O1.png)|
- |-O2|Calculation time = 0.034351|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O2.png)|
- |-O3|Calculation time = 0.032118|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O3.png)|
- |-Ofast|Calculation time = 0.029173|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-Ofast.png)|
- |-O0|Calculation time = 0.039069|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O0.png)|
- |-Os|Calculation time = 0.028374| ![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-Os.png)|
+ |-fno-asynchronous-unwind-tables -fno-jump-tables -fno-stack-protector -fno-exceptions -O0|Calculation time = 2.94435|414 + 229|
+ |-O1|Calculation time = 0.032683|375 + 249|
+ |-O2|Calculation time = 0.034351|372 + 261|
+ |-O3|Calculation time = 0.032118|403 + 261|
+ |-Ofast|Calculation time = 0.029173|403 + 261|
+ |-O0|Calculation time = 0.039069|426 + 268|
+ |-Os|Calculation time = 0.028374|333 + 243|
  
 ### Шаг № 2. Сравнение размера кода на ассемблере
-| Параметр | Количество строк | Скрин |
- |:--:|:---:|:---:|
- |без параметров|Calculation time = 0.032683|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O1.png)|
- |-ffunction-sections -Wl --gc-sections|Calculation time = 0.034351|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O2.png)|
- |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|Calculation time = 0.032118|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-O3.png)|
- |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 0.029173|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_-Ofast.png)|
+| Параметры | Количество строк (main.s + Output_input_B.s) | время работы|
+ |:--:|:---:|:--:|
+ |без параметров|453 + 268|Calculation time = 0.045827|
+ |-ffunction-sections -Wl,--gc-sections|454 + 270|Calculation time = 0.046978|
+ |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|414 + 238|Calculation time = 0.045296|
+ |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|414 + 238|Calculation time = 0.046244|
