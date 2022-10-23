@@ -193,7 +193,7 @@ main:                                           # В функции main ест�
                                                 # регистры rdi и rsi: FILE* ifst, int A[]
                                                 # сохраняется возвращаемый результат в eax
         mov     DWORD PTR -4[rbp], eax          # Сохранение переменной size = ReadFromFile(ifst, A)
-        mov     rax, QWORD PTR -16[rbp]
+        mov     rax, QWORD PTR -16[rbp]         # DWORD PTR -4[rbp] - это size, QWORD PTR -16[rbp] - переменная FILE* ifst файлового потока
         mov     rdi, rax
         call    fclose@PLT                      # В функцию fclose передается 1 параметр через
                                                 # регистр rdi: FILE* ifst
