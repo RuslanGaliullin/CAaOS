@@ -41,6 +41,24 @@ errMessage1:
 	.section	.rodata
 	.align 8
 .LC1:
+	.string	"the specified length of the substring does not correspond to reality"
+	.text
+	.globl	errMessage2
+	.type	errMessage2, @function
+errMessage2:
+	endbr64
+	push	rbp
+	mov	rbp, rsp
+	lea	rax, .LC1[rip]
+	mov	rdi, rax
+	call	puts@PLT
+	nop
+	pop	rbp
+	ret
+	.size	errMessage2, .-errMessage2
+	.section	.rodata
+	.align 8
+.LC2:
 	.string	"incorrect size of substring!\n1 <= size <= %d"
 	.text
 	.globl	errMessage3
@@ -50,7 +68,7 @@ errMessage3:
 	push	rbp
 	mov	rbp, rsp
 	mov	esi, 10000000
-	lea	rax, .LC1[rip]
+	lea	rax, .LC2[rip]
 	mov	rdi, rax
 	mov	eax, 0
 	call	printf@PLT
@@ -58,6 +76,26 @@ errMessage3:
 	pop	rbp
 	ret
 	.size	errMessage3, .-errMessage3
+	.globl	check_sub
+	.type	check_sub, @function
+check_sub:
+	endbr64
+	push	rbp
+	mov	rbp, rsp
+	sub	rsp, 16
+	mov	DWORD PTR -4[rbp], edi
+	mov	QWORD PTR -16[rbp], rsi
+	mov	rax, QWORD PTR -16[rbp]
+	mov	rdi, rax
+	call	strlen@PLT
+	mov	edx, DWORD PTR -4[rbp]
+	movsx	rdx, edx
+	cmp	rax, rdx
+	setne	al
+	movzx	eax, al
+	leave
+	ret
+	.size	check_sub, .-check_sub
 	.globl	GenerateRandomString
 	.type	GenerateRandomString, @function
 GenerateRandomString:
@@ -67,8 +105,8 @@ GenerateRandomString:
 	sub	rsp, 32
 	mov	DWORD PTR -20[rbp], edi
 	mov	DWORD PTR -4[rbp], 0
-	jmp	.L4
-.L5:
+	jmp	.L7
+.L8:
 	call	rand@PLT
 	cdq
 	shr	edx, 25
@@ -81,35 +119,35 @@ GenerateRandomString:
 	lea	rdx, Text[rip]
 	mov	BYTE PTR [rax+rdx], cl
 	add	DWORD PTR -4[rbp], 1
-.L4:
+.L7:
 	mov	eax, DWORD PTR -4[rbp]
 	cmp	eax, DWORD PTR -20[rbp]
-	jl	.L5
+	jl	.L8
 	nop
 	nop
 	leave
 	ret
 	.size	GenerateRandomString, .-GenerateRandomString
 	.section	.rodata
-.LC2:
-	.string	"-f"
 .LC3:
-	.string	"r"
+	.string	"-f"
 .LC4:
-	.string	"Cannot open input file."
+	.string	"r"
 .LC5:
-	.string	"-n"
+	.string	"Cannot open input file."
 .LC6:
-	.string	"-r"
+	.string	"-n"
 .LC7:
+	.string	"-r"
+.LC8:
 	.string	"-c"
-.LC9:
-	.string	"w"
 .LC10:
-	.string	"Cannot open %s to write\n"
+	.string	"w"
 .LC11:
-	.string	"Calculation time = %g\n"
+	.string	"Cannot open %s to write\n"
 .LC12:
+	.string	"Calculation time = %g\n"
+.LC13:
 	.string	"\nCalculation time = %g\n"
 	.text
 	.globl	main
@@ -122,40 +160,40 @@ main:
 	mov	DWORD PTR -68[rbp], edi
 	mov	QWORD PTR -80[rbp], rsi
 	cmp	DWORD PTR -68[rbp], 4
-	jle	.L7
+	jle	.L10
 	cmp	DWORD PTR -68[rbp], 6
-	jle	.L8
-.L7:
+	jle	.L11
+.L10:
 	mov	eax, 0
 	call	errMessage1
 	mov	eax, 1
-	jmp	.L9
-.L8:
+	jmp	.L12
+.L11:
 	mov	rax, QWORD PTR -80[rbp]
 	add	rax, 8
 	mov	rax, QWORD PTR [rax]
-	lea	rdx, .LC2[rip]
+	lea	rdx, .LC3[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
 	call	strcmp@PLT
 	test	eax, eax
-	jne	.L10
+	jne	.L13
 	mov	rax, QWORD PTR -80[rbp]
 	add	rax, 32
 	mov	rax, QWORD PTR [rax]
-	lea	rdx, .LC3[rip]
+	lea	rdx, .LC4[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
 	call	fopen@PLT
 	mov	QWORD PTR -24[rbp], rax
 	cmp	QWORD PTR -24[rbp], 0
-	jne	.L11
-	lea	rax, .LC4[rip]
+	jne	.L14
+	lea	rax, .LC5[rip]
 	mov	rdi, rax
 	call	puts@PLT
 	mov	eax, 3
-	jmp	.L9
-.L11:
+	jmp	.L12
+.L14:
 	mov	rax, QWORD PTR -24[rbp]
 	mov	edx, 10000000
 	lea	rcx, Text[rip]
@@ -181,17 +219,39 @@ main:
 	lea	rax, Sub[rip]
 	mov	rdi, rax
 	call	strcpy@PLT
+	mov	rax, QWORD PTR -80[rbp]
+	add	rax, 24
+	mov	rdx, QWORD PTR [rax]
+	mov	eax, DWORD PTR -8[rbp]
+	mov	rsi, rdx
+	mov	edi, eax
+	call	check_sub
+	test	eax, eax
+	je	.L15
+	mov	eax, 0
+	call	errMessage2
+	mov	eax, 2
 	jmp	.L12
-.L10:
+.L15:
+	cmp	DWORD PTR -8[rbp], 10000000
+	jg	.L16
+	cmp	DWORD PTR -8[rbp], 0
+	jg	.L17
+.L16:
+	mov	eax, 0
+	call	errMessage3
+	mov	eax, 3
+	jmp	.L12
+.L13:
 	mov	rax, QWORD PTR -80[rbp]
 	add	rax, 8
 	mov	rax, QWORD PTR [rax]
-	lea	rdx, .LC5[rip]
+	lea	rdx, .LC6[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
 	call	strcmp@PLT
 	test	eax, eax
-	jne	.L13
+	jne	.L18
 	mov	rax, QWORD PTR -80[rbp]
 	add	rax, 16
 	mov	rax, QWORD PTR [rax]
@@ -207,6 +267,30 @@ main:
 	lea	rax, Sub[rip]
 	mov	rdi, rax
 	call	strcpy@PLT
+	mov	rax, QWORD PTR -80[rbp]
+	add	rax, 24
+	mov	rdx, QWORD PTR [rax]
+	mov	eax, DWORD PTR -8[rbp]
+	mov	rsi, rdx
+	mov	edi, eax
+	call	check_sub
+	test	eax, eax
+	je	.L19
+	mov	eax, 0
+	call	errMessage2
+	mov	eax, 2
+	jmp	.L12
+.L19:
+	cmp	DWORD PTR -8[rbp], 10000000
+	jg	.L20
+	cmp	DWORD PTR -8[rbp], 0
+	jg	.L21
+.L20:
+	mov	eax, 0
+	call	errMessage3
+	mov	eax, 3
+	jmp	.L12
+.L21:
 	mov	edi, 0
 	call	time@PLT
 	mov	edi, eax
@@ -215,57 +299,49 @@ main:
 	mov	rax, QWORD PTR -80[rbp]
 	add	rax, 32
 	mov	rax, QWORD PTR [rax]
-	lea	rdx, .LC6[rip]
-	mov	rsi, rdx
-	mov	rdi, rax
-	call	strcmp@PLT
-	test	eax, eax
-	jne	.L14
-	mov	eax, DWORD PTR -4[rbp]
-	mov	edi, eax
-	call	GenerateRandomString
-	jmp	.L12
-.L14:
-	mov	rax, QWORD PTR -80[rbp]
-	add	rax, 32
-	mov	rax, QWORD PTR [rax]
 	lea	rdx, .LC7[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
 	call	strcmp@PLT
 	test	eax, eax
-	jne	.L15
+	jne	.L22
+	mov	eax, DWORD PTR -4[rbp]
+	mov	edi, eax
+	call	GenerateRandomString
+	jmp	.L17
+.L22:
+	mov	rax, QWORD PTR -80[rbp]
+	add	rax, 32
+	mov	rax, QWORD PTR [rax]
+	lea	rdx, .LC8[rip]
+	mov	rsi, rdx
+	mov	rdi, rax
+	call	strcmp@PLT
+	test	eax, eax
+	jne	.L23
 	mov	eax, DWORD PTR -4[rbp]
 	mov	esi, eax
 	lea	rax, Text[rip]
 	mov	rdi, rax
 	call	ReadFromConsole@PLT
 	mov	DWORD PTR -4[rbp], eax
-	jmp	.L12
-.L15:
+	jmp	.L17
+.L23:
 	mov	eax, 0
 	call	errMessage1
-	mov	eax, 2
-	jmp	.L9
-.L13:
-	mov	eax, 2
-	jmp	.L9
-.L12:
-	cmp	DWORD PTR -8[rbp], 0
-	jle	.L16
-	cmp	DWORD PTR -8[rbp], 10000000
-	jle	.L17
-.L16:
+	mov	eax, 1
+	jmp	.L12
+.L18:
 	mov	eax, 0
-	call	errMessage3
-	mov	eax, 3
-	jmp	.L9
+	call	errMessage1
+	mov	eax, 1
+	jmp	.L12
 .L17:
 	call	clock@PLT
 	mov	QWORD PTR -32[rbp], rax
 	mov	DWORD PTR -16[rbp], 0
-	jmp	.L18
-.L19:
+	jmp	.L24
+.L25:
 	mov	edx, DWORD PTR -4[rbp]
 	mov	eax, DWORD PTR -8[rbp]
 	mov	r8d, edx
@@ -279,16 +355,16 @@ main:
 	call	BuildIndexArray@PLT
 	mov	DWORD PTR -12[rbp], eax
 	add	DWORD PTR -16[rbp], 1
-.L18:
+.L24:
 	cmp	DWORD PTR -16[rbp], 19
-	jle	.L19
+	jle	.L25
 	call	clock@PLT
 	mov	QWORD PTR -40[rbp], rax
 	mov	rax, QWORD PTR -40[rbp]
 	sub	rax, QWORD PTR -32[rbp]
 	pxor	xmm0, xmm0
 	cvtsi2sd	xmm0, rax
-	movsd	xmm1, QWORD PTR .LC8[rip]
+	movsd	xmm1, QWORD PTR .LC9[rip]
 	divsd	xmm0, xmm1
 	movsd	QWORD PTR -48[rbp], xmm0
 	mov	rax, QWORD PTR stdout[rip]
@@ -300,24 +376,24 @@ main:
 	mov	rax, QWORD PTR -80[rbp]
 	add	rax, 40
 	mov	rax, QWORD PTR [rax]
-	lea	rdx, .LC9[rip]
+	lea	rdx, .LC10[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
 	call	fopen@PLT
 	mov	QWORD PTR -56[rbp], rax
 	cmp	QWORD PTR -56[rbp], 0
-	jne	.L20
+	jne	.L26
 	mov	rax, QWORD PTR -80[rbp]
 	add	rax, 40
 	mov	rax, QWORD PTR [rax]
 	mov	rsi, rax
-	lea	rax, .LC10[rip]
+	lea	rax, .LC11[rip]
 	mov	rdi, rax
 	mov	eax, 0
 	call	printf@PLT
 	mov	eax, 1
-	jmp	.L9
-.L20:
+	jmp	.L12
+.L26:
 	mov	edx, DWORD PTR -12[rbp]
 	mov	rax, QWORD PTR -56[rbp]
 	lea	rcx, Index[rip]
@@ -327,7 +403,7 @@ main:
 	mov	rax, QWORD PTR stdout[rip]
 	mov	rdx, QWORD PTR -48[rbp]
 	movq	xmm0, rdx
-	lea	rdx, .LC11[rip]
+	lea	rdx, .LC12[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
 	mov	eax, 1
@@ -335,7 +411,7 @@ main:
 	mov	rdx, QWORD PTR -48[rbp]
 	mov	rax, QWORD PTR -56[rbp]
 	movq	xmm0, rdx
-	lea	rdx, .LC12[rip]
+	lea	rdx, .LC13[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
 	mov	eax, 1
@@ -344,13 +420,13 @@ main:
 	mov	rdi, rax
 	call	fclose@PLT
 	mov	eax, 0
-.L9:
+.L12:
 	leave
 	ret
 	.size	main, .-main
 	.section	.rodata
 	.align 8
-.LC8:
+.LC9:
 	.long	0
 	.long	1093567618
 	.ident	"GCC: (Ubuntu 11.2.0-19ubuntu1) 11.2.0"
