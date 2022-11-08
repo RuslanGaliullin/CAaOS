@@ -2,22 +2,22 @@
 ### Шаг № 1. Программа на С
   - Написать программу на С из нескольких единиц компиляции:
   
-  2 единицы компиляции: [main.c](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/main.c) [Output_input_B.c](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Output_input_B.c)
-- В main находится основная программа. В Output_input_B вспомогательные функции для построения массива В, считывание ввода разными способами и вывод резульата.
+  2 единицы компиляции: [main.c](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/main.c) [addition.c](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/addition.c)
+- В main находится основная программа. В addition вспомогательные функции для построения массива с индаксами подстроки, считывание ввода разными способами и вывод резульата.
 ### Шаг № 2. В ассемблер
 - Откомпилировать без оптимизирующих и отладочных опций программу на С
 
 |Использовались соответствующие параметры компиляции| 
 :--------------------:
-|gcc -masm=intel -fno-asynchronous-unwind-tables -fno-jump-tables -fno-stack-protector -fno-exceptions -O0 main.c Output_input_B.c|
+|gcc -masm=intel -fno-asynchronous-unwind-tables -fno-jump-tables -fno-stack-protector -fno-exceptions -O0 main.c addition.c|
 
-- Полученные файлы: 
-  - [main.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_from_gcc/MARK-04/MAIN_no_optimize_Task01.s)
-  - [Output_input_B.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_from_gcc/MARK-04/Output_input_no_opt.s)
+- Полученные файлы при добавлении парамтера -S: 
+  - [main.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_gcc/main.s)
+  - [addition.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_gcc/addition.s)
 ### Шаг № 3. Комментарии
 - Написать комментарии к программе и убрать макросы, полученные файлы: 
-  - [main.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-4/MAIN_comm_and_macro.s)
-  - [Output_input_B.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-4/Output_input_comm_macro.s)
+  - [main.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-4/main_w_comments.s)
+  - [addition.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-4/addition_w_comments.s)
 - Комментарии были написаны к таким переменным, как size, int A[10000000], int B[10000000], i, argc, argv, ifst, start, end, calcTime, ofst1
 - Макросов (macro) не было обнаружено
 ### Шаг № 4. Тесты
