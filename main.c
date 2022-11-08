@@ -51,11 +51,6 @@ int main(int argc, char *argv[]) {
       GenerateRandomString(text_size);
     } else if (!strcmp(argv[4], "-c")) {
       text_size = ReadFromConsole(Text, text_size);
-      printf("\n");
-      for (int i = 0; i < text_size; ++i) {
-        printf("-%d-", Text[i]);
-      }
-      printf("\n");
     }
     else{
       errMessage1();
