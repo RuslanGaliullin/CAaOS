@@ -15,10 +15,16 @@ void errMessage1() {
          "  Or:\n"
          "     command -n size \"word\" -c/-r outfile\n");
 }
+void errMessage2() {
+  printf("the specified length of the substring does not correspond to reality\n");
+}
 void errMessage3() {
   printf("incorrect size of substring!\n"
-         "1 <= size <= %d",
+         "1 <= size <= %d\n",
          SIZE_ARRAY);
+}
+int check_sub(int real_size, char *str) {
+  return strlen(str) != real_size;
 }
 void GenerateRandomString(int text_size) {
   for (int i = 0; i < text_size; i++) {
@@ -42,26 +48,38 @@ int main(int argc, char *argv[]) {
     fclose(ifst);
     sub_size = strtol(argv[2], NULL, 10);
     stpcpy(Sub, argv[3]);
+    if (check_sub(sub_size, argv[3])) {
+      errMessage2();
+      return 2;
+    }
+    if (sub_size > SIZE_ARRAY || sub_size <= 0) {
+      errMessage3();
+      return 3;
+    }
   } else if (!strcmp(argv[1], "-n")) {
     sub_size = strtol(argv[2], NULL, 10);
     stpcpy(Sub, argv[3]);
+    if (check_sub(sub_size, argv[3])) {
+      errMessage2();
+      return 2;
+    }
+    if (sub_size > SIZE_ARRAY || sub_size <= 0) {
+      errMessage3();
+      return 3;
+    }
     srand((unsigned int) (time(0)));
     text_size = SIZE_ARRAY;
     if (!strcmp(argv[4], "-r")) {
       GenerateRandomString(text_size);
     } else if (!strcmp(argv[4], "-c")) {
       text_size = ReadFromConsole(Text, text_size);
-    }
-    else{
+    } else {
       errMessage1();
-      return 2;
+      return 1;
     }
   } else {
-    return 2;
-  }
-  if (sub_size < 1 || sub_size > SIZE_ARRAY) {
-    errMessage3();
-    return 3;
+    errMessage1();
+    return 1;
   }
   clock_t start = clock();
   for (int i = 0; i < 20; ++i) {
