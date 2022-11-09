@@ -8,43 +8,43 @@ BuildIndexArray:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 48
-	mov	QWORD PTR -24[rbp], rdi
-	mov	QWORD PTR -32[rbp], rsi
-	mov	DWORD PTR -36[rbp], edx
-	mov	QWORD PTR -48[rbp], rcx
-	mov	DWORD PTR -40[rbp], r8d
-	mov	DWORD PTR -4[rbp], 0
-	mov	DWORD PTR -8[rbp], 0
+	mov	QWORD PTR -24[rbp], rdi                     # QWORD PTR -24[rbp] - это int answ[]
+	mov	QWORD PTR -32[rbp], rsi                     # QWORD PTR -32[rbp] - это char sub[]
+	mov	DWORD PTR -36[rbp], edx                     # DWORD PTR -36[rbp] - это int size_sub
+	mov	QWORD PTR -48[rbp], rcx                     # QWORD PTR -48[rbp] - это char A[]
+	mov	DWORD PTR -40[rbp], r8d                     # DWORD PTR -40[rbp] - это int size_A
+	mov	DWORD PTR -4[rbp], 0                        # DWORD PTR -4[rbp] - это int j
+	mov	DWORD PTR -8[rbp], 0                        # DWORD PTR -8[rbp] - это int i
 	jmp	.L2
 .L4:
-	mov	eax, DWORD PTR -36[rbp]
+	mov	eax, DWORD PTR -36[rbp]                     # DWORD PTR -36[rbp] - это int size_sub
 	movsx	rdx, eax
-	mov	eax, DWORD PTR -8[rbp]
+	mov	eax, DWORD PTR -8[rbp]                      # DWORD PTR -8[rbp] - это int i
 	movsx	rcx, eax
-	mov	rax, QWORD PTR -48[rbp]
+	mov	rax, QWORD PTR -48[rbp]                     # QWORD PTR -48[rbp] - это char A[]
 	add	rcx, rax
-	mov	rax, QWORD PTR -32[rbp]
+	mov	rax, QWORD PTR -32[rbp]                     # QWORD PTR -32[rbp] - это char sub[]
 	mov	rsi, rcx
 	mov	rdi, rax
 	call	strncmp@PLT
 	test	eax, eax
 	jne	.L3
-	mov	eax, DWORD PTR -4[rbp]
+	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int j
 	cdqe
 	lea	rdx, 0[0+rax*4]
-	mov	rax, QWORD PTR -24[rbp]
+	mov	rax, QWORD PTR -24[rbp]                     # QWORD PTR -24[rbp] - это int answ[]
 	add	rdx, rax
-	mov	eax, DWORD PTR -8[rbp]
+	mov	eax, DWORD PTR -8[rbp]                      # DWORD PTR -8[rbp] - это int i
 	mov	DWORD PTR [rdx], eax
-	add	DWORD PTR -4[rbp], 1
+	add	DWORD PTR -4[rbp], 1                        # DWORD PTR -4[rbp] - это int j
 .L3:
-	add	DWORD PTR -8[rbp], 1
+	add	DWORD PTR -8[rbp], 1                        # DWORD PTR -8[rbp] - это int i
 .L2:
-	mov	eax, DWORD PTR -40[rbp]
-	sub	eax, DWORD PTR -36[rbp]
-	cmp	DWORD PTR -8[rbp], eax
+	mov	eax, DWORD PTR -40[rbp]                     # DWORD PTR -40[rbp] - это int size_A
+	sub	eax, DWORD PTR -36[rbp]                     # DWORD PTR -36[rbp] - это int size_sub
+	cmp	DWORD PTR -8[rbp], eax                      # DWORD PTR -8[rbp] - это int i
 	jle	.L4
-	mov	eax, DWORD PTR -4[rbp]
+	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int j
 	leave
 	ret
 	.size	BuildIndexArray, .-BuildIndexArray
@@ -59,30 +59,30 @@ Output:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 48
-	mov	QWORD PTR -24[rbp], rdi
-	mov	QWORD PTR -32[rbp], rsi
-	mov	DWORD PTR -36[rbp], edx
-	mov	DWORD PTR -4[rbp], 0
+	mov	QWORD PTR -24[rbp], rdi                     # QWORD PTR -24[rbp] - это FILE *ofst
+	mov	QWORD PTR -32[rbp], rsi                     # QWORD PTR -32[rbp] - это int array[]
+	mov	DWORD PTR -36[rbp], edx                     # DWORD PTR -36[rbp] - это int size
+	mov	DWORD PTR -4[rbp], 0                        # DWORD PTR -4[rbp] - это int i
 	jmp	.L7
 .L8:
-	mov	eax, DWORD PTR -4[rbp]
+	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int i
 	cdqe
 	lea	rdx, 0[0+rax*4]
-	mov	rax, QWORD PTR -32[rbp]
+	mov	rax, QWORD PTR -32[rbp]                     # QWORD PTR -32[rbp] - это int array[]
 	add	rax, rdx
 	mov	edx, DWORD PTR [rax]
-	mov	rax, QWORD PTR -24[rbp]
+	mov	rax, QWORD PTR -24[rbp]                     # QWORD PTR -24[rbp] - это FILE *ofst
 	lea	rcx, .LC0[rip]
 	mov	rsi, rcx
 	mov	rdi, rax
 	mov	eax, 0
 	call	fprintf@PLT
-	add	DWORD PTR -4[rbp], 1
+	add	DWORD PTR -4[rbp], 1                        # DWORD PTR -4[rbp] - это int i
 .L7:
-	mov	eax, DWORD PTR -4[rbp]
-	cmp	eax, DWORD PTR -36[rbp]
+	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int i
+	cmp	eax, DWORD PTR -36[rbp]                     # DWORD PTR -36[rbp] - это int size
 	jl	.L8
-	mov	rax, QWORD PTR -24[rbp]
+	mov	rax, QWORD PTR -24[rbp]                     # QWORD PTR -24[rbp] - это FILE *ofst
 	mov	rsi, rax
 	mov	edi, 10
 	call	fputc@PLT
@@ -97,47 +97,47 @@ ReadFromFile:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 48
-	mov	QWORD PTR -24[rbp], rdi
-	mov	QWORD PTR -32[rbp], rsi
-	mov	DWORD PTR -36[rbp], edx
-	mov	DWORD PTR -4[rbp], 0
+	mov	QWORD PTR -24[rbp], rdi                     # QWORD PTR -24[rbp] - это FILE *fin
+	mov	QWORD PTR -32[rbp], rsi                     # QWORD PTR -32[rbp] - char A[]
+	mov	DWORD PTR -36[rbp], edx                     # DWORD PTR -36[rbp] - это int max_size
+	mov	DWORD PTR -4[rbp], 0                        # DWORD PTR -4[rbp] - это int i
 .L12:
-	mov	eax, DWORD PTR -4[rbp]
-	cmp	eax, DWORD PTR -36[rbp]
+	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int i
+	cmp	eax, DWORD PTR -36[rbp]                     # DWORD PTR -36[rbp] - это int max_size
 	je	.L15
-	mov	rax, QWORD PTR -24[rbp]
+	mov	rax, QWORD PTR -24[rbp]                     # QWORD PTR -24[rbp] - это FILE *fin
 	mov	rdi, rax
 	call	fgetc@PLT
-	mov	DWORD PTR -8[rbp], eax
-	mov	eax, DWORD PTR -4[rbp]
+	mov	DWORD PTR -8[rbp], eax                      # DWORD PTR -8[rbp] - это int ch
+	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int i
 	movsx	rdx, eax
-	mov	rax, QWORD PTR -32[rbp]
+	mov	rax, QWORD PTR -32[rbp]                     # QWORD PTR -32[rbp] - char A[]
 	add	rax, rdx
-	mov	edx, DWORD PTR -8[rbp]
-	mov	BYTE PTR [rax], dl
-	add	DWORD PTR -4[rbp], 1
-	cmp	DWORD PTR -8[rbp], -1
+	mov	edx, DWORD PTR -8[rbp]                      # DWORD PTR -8[rbp] - это int ch
+	mov	BYTE PTR [rax], dl                          # BYTE PTR [rax] - это A[i], в dl лежит int ch
+	add	DWORD PTR -4[rbp], 1                        # DWORD PTR -4[rbp] - это int i
+	cmp	DWORD PTR -8[rbp], -1                       # DWORD PTR -8[rbp] - это int ch
 	jne	.L12
 	jmp	.L11
 .L15:
 	nop
 .L11:
-	mov	eax, DWORD PTR -4[rbp]
+	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int i
 	cdqe
 	lea	rdx, -1[rax]
-	mov	rax, QWORD PTR -32[rbp]
+	mov	rax, QWORD PTR -32[rbp]                     # QWORD PTR -32[rbp] - char A[]
 	add	rax, rdx
-	movzx	eax, BYTE PTR [rax]
+	movzx	eax, BYTE PTR [rax]                     # BYTE PTR [rax] - это A[i - 1]
 	cmp	al, -1
 	jne	.L13
-	mov	eax, DWORD PTR -4[rbp]
+	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int i
 	cdqe
 	lea	rdx, -1[rax]
-	mov	rax, QWORD PTR -32[rbp]
+	mov	rax, QWORD PTR -32[rbp]                     # QWORD PTR -32[rbp] - char A[]
 	add	rax, rdx
-	mov	BYTE PTR [rax], 0
+	mov	BYTE PTR [rax], 0                           # BYTE PTR [rax] - это A[i - 1]
 .L13:
-	mov	eax, DWORD PTR -4[rbp]
+	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int i
 	leave
 	ret
 	.size	ReadFromFile, .-ReadFromFile
@@ -148,8 +148,8 @@ ReadFromConsole:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 16
-	mov	QWORD PTR -8[rbp], rdi
-	mov	DWORD PTR -12[rbp], esi
+	mov	QWORD PTR -8[rbp], rdi                      # QWORD PTR -8[rbp] - это char A[]
+	mov	DWORD PTR -12[rbp], esi                     # DWORD PTR -12[rbp] - это int max_size
 	mov	rax, QWORD PTR stdin[rip]
 	mov	edx, DWORD PTR -12[rbp]
 	mov	rcx, QWORD PTR -8[rbp]
