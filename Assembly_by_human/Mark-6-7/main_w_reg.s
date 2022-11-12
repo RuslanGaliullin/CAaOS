@@ -203,7 +203,7 @@ main:                                              # параметра int argc
 	mov	rdi, rax
 	call	ReadFromFile@PLT                       # в ReadFromFile передаются параметры FILE* ifst, char A[], 10000000 через rdi, rsi, edx соответственно
 	                                               # возвращаемое значение сохраняется в eax, из eax в text_size
-	mov	DWORD PTR -4[rbp], eax                     # DWORD PTR -4[rbp] - это int text_size
+	mov	r13d, eax                                  # r13d - это int text_size
 	mov	rax, QWORD PTR -24[rbp]                    # QWORD PTR -24[rbp] - это FILE *ifst
 	mov	rdi, rax
 	call	fclose@PLT                             # В функцию fclose передается FILE* ifst через rdi
@@ -303,7 +303,7 @@ main:                                              # параметра int argc
 	mov	edi, eax                                   # Возвращаемое значение в eax
 	call	srand@PLT                              # В функцию scrand передается значение time(0) через edi
 	                                               # scrand ничего не возвращает
-	mov	DWORD PTR -4[rbp], 10000000                 # DWORD PTR -4[rbp] - это int text_size
+	mov r13d, 10000000                               # r13d - это int text_size
 	mov	rax, QWORD PTR -80[rbp]                     # QWORD PTR -80[rbp] - это char *argv[]
 	add	rax, 32
 	mov	rax, QWORD PTR [rax]
@@ -314,7 +314,7 @@ main:                                              # параметра int argc
                                                     # Результат функции strcmp в eax
 	test	eax, eax
 	jne	.L22
-	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int text_size
+	mov	eax, r13d                                   # r13d - это int text_size
 	mov	edi, eax
 	call	GenerateRandomString                    # В функцию GenerateRandomString передается аргумент text_size(DWORD PTR -4[rbp]) через edi
 	                                                # функция ничего не возвращает
@@ -330,12 +330,12 @@ main:                                              # параметра int argc
                                                     # Результат функции strcmp в eax
 	test	eax, eax
 	jne	.L23
-	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int text_size
+	mov	eax, r13d                                   # r13d - это int text_size
 	mov	esi, eax
 	lea	rax, Text[rip]
 	mov	rdi, rax
 	call	ReadFromConsole@PLT                     # В функцию ReadFromConsole передаются char Text[], int text_size через rdi, esi соответственно
-	mov	DWORD PTR -4[rbp], eax                      # DWORD PTR -4[rbp] - это int text_size
+	mov	r13d, eax                                   # r13d - это int text_size
 	jmp	.L17
 .L23:
 	mov	eax, 0
@@ -351,10 +351,10 @@ main:                                              # параметра int argc
 	call	clock@PLT                               # В функцию clock не передаются никакие аргументы
 	                                                # Возвращаемое значение сохраняется в rax
 	mov	QWORD PTR -32[rbp], rax                     # QWORD PTR -32[rbp] - это clock_t start
-	mov	r14d, 0                                     # r14d - это int i
+	mov	r9d, 0                                      # r9d - это int i
 	jmp	.L24
 .L25:
-	mov	edx, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int text_size
+	mov	edx, r13d                                   # r13d - это int text_size
 	mov	eax, DWORD PTR -8[rbp]                      # DWORD PTR -8[rbp] - это int sub_size
 	mov	r8d, edx
 	lea	rdx, Text[rip]
@@ -366,10 +366,10 @@ main:                                              # параметра int argc
 	mov	rdi, rax
 	call	BuildIndexArray@PLT                     # В функцию BuildIndexArray передаются аргументы int Index[], char Sub[], int sub_size, char Text[], int text_size
 	                                                # возвращаемое значение сохраняется в eax
-	mov	DWORD PTR -12[rbp], eax                     # DWORD PTR -12[rbp] - это int index_size
-	add	r14d, 1                                     # r14d - это int i
+	mov	r12d, eax                                   # r12d - это int index_size
+	add	r9d, 1                                      # r9d - это int i
 .L24:
-	cmp	r14d, 19                                    # r14d - это int i
+	cmp	r9d, 19                                     # r9d - это int i
 	jle	.L25
 	call	clock@PLT                               # В функцию clock не передаются никакие аргументы
                      	                            # Возвращаемое значение сохраняется в rax
@@ -382,7 +382,7 @@ main:                                              # параметра int argc
 	divsd	xmm0, xmm1
 	movsd	QWORD PTR -48[rbp], xmm0                # QWORD PTR -48[rbp] - это double calcTime
 	mov	rax, QWORD PTR stdout[rip]
-	mov	edx, DWORD PTR -12[rbp]                     # DWORD PTR -12[rbp] - это int index_size
+	mov	edx, r12d                                   # r12d - это int index_size
 	lea	rcx, Index[rip]
 	mov	rsi, rcx
 	mov	rdi, rax
@@ -410,7 +410,7 @@ main:                                              # параметра int argc
 	mov	eax, 1
 	jmp	.L12
 .L26:
-	mov	edx, DWORD PTR -12[rbp]                     # DWORD PTR -12[rbp] - это int index_size
+	mov	edx, r12d                                   # r12d - это int index_size
 	mov	rax, QWORD PTR -56[rbp]                     # QWORD PTR -56[rbp] - это FILE *ofst1
 	lea	rcx, Index[rip]
 	mov	rsi, rcx
