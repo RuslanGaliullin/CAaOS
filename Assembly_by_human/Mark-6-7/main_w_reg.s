@@ -105,7 +105,7 @@ GenerateRandomString:                       # параметр int text_size(DWO
 	mov	rbp, rsp
 	sub	rsp, 32
 	mov	DWORD PTR -20[rbp], edi             # DWORD PTR -20[rbp] - int text_size локальная в функции GenerateRandomString
-	mov	DWORD PTR -4[rbp], 0                # DWORD PTR -4[rbp] - это переменная int i = 0
+	mov	r15d, 0                             # r15d - это переменная int i = 0
 	jmp	.L7
 .L8:
 	call	rand@PLT                        # аргументы в rand() не передаются, возвращаемое значение сохраняется в eax
@@ -115,13 +115,13 @@ GenerateRandomString:                       # параметр int text_size(DWO
 	and	eax, 127
 	sub	eax, edx
 	mov	ecx, eax
-	mov	eax, DWORD PTR -4[rbp]              # DWORD PTR -4[rbp] - это переменная int i
+	mov	eax, r15d                           # r15d - это переменная int i
 	cdqe
 	lea	rdx, Text[rip]
 	mov	BYTE PTR [rax+rdx], cl
-	add	DWORD PTR -4[rbp], 1                # DWORD PTR -4[rbp] - это переменная int i
+	add	r15d, 1                             # r15d - это переменная int i
 .L7:
-	mov	eax, DWORD PTR -4[rbp]              # DWORD PTR -4[rbp] - это переменная int i
+	mov	eax, r15d                           # r15d - это переменная int i
 	cmp	eax, DWORD PTR -20[rbp]             # DWORD PTR -20[rbp] - int text_size локальная в функции GenerateRandomString
 	jl	.L8
 	nop
@@ -186,7 +186,7 @@ main:                                              # параметра int argc
 	lea	rdx, .LC4[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	fopen@PLT                              
+	call	fopen@PLT
 	mov	QWORD PTR -24[rbp], rax                    # QWORD PTR -24[rbp] - это FILE *ifst
 	cmp	QWORD PTR -24[rbp], 0
 	jne	.L14
@@ -351,7 +351,7 @@ main:                                              # параметра int argc
 	call	clock@PLT                               # В функцию clock не передаются никакие аргументы
 	                                                # Возвращаемое значение сохраняется в rax
 	mov	QWORD PTR -32[rbp], rax                     # QWORD PTR -32[rbp] - это clock_t start
-	mov	DWORD PTR -16[rbp], 0                       # DWORD PTR -16[rbp] - это int i
+	mov	r14d, 0                                     # r14d - это int i
 	jmp	.L24
 .L25:
 	mov	edx, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int text_size
@@ -367,9 +367,9 @@ main:                                              # параметра int argc
 	call	BuildIndexArray@PLT                     # В функцию BuildIndexArray передаются аргументы int Index[], char Sub[], int sub_size, char Text[], int text_size
 	                                                # возвращаемое значение сохраняется в eax
 	mov	DWORD PTR -12[rbp], eax                     # DWORD PTR -12[rbp] - это int index_size
-	add	DWORD PTR -16[rbp], 1
+	add	r14d, 1                                     # r14d - это int i
 .L24:
-	cmp	DWORD PTR -16[rbp], 19
+	cmp	r14d, 19                                    # r14d - это int i
 	jle	.L25
 	call	clock@PLT                               # В функцию clock не передаются никакие аргументы
                      	                            # Возвращаемое значение сохраняется в rax
@@ -394,7 +394,7 @@ main:                                              # параметра int argc
 	lea	rdx, .LC10[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	fopen@PLT                               # В функцию fopen передаются char* argv[5], char* .LC10 через rdi и rsi соответственно 
+	call	fopen@PLT                               # В функцию fopen передаются char* argv[5], char* .LC10 через rdi и rsi соответственно
                                                     # Возвращаемое значение сохранено в rax
 	mov	QWORD PTR -56[rbp], rax                     # QWORD PTR -56[rbp] - это FILE *ofst1
 	cmp	QWORD PTR -56[rbp], 0
