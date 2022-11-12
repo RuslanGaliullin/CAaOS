@@ -50,18 +50,19 @@
 ### Шаг № 1. Замена на регистры
   - Максимальное использование регистров было достигнуто использованием их для локальных переменных во вспомогательных функциях: BuildIndexArray, Output, ReadFromFile, ReadFromConsole, check_sub, GenerateRandomString. В них использовались регистры от r14d и r15d . check_sub, GenerateRandomString в файле [main_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.s), остальные во вспомогательном файле [addition_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/addition_w_reg.s). Подробно какой регистр отвечает за какую переменную написано в комментариях к коду
 ### Шаг № 2. Тестирование
-  - Запускаеся файл [CAaOS/Assembler_modified_by_me/MARK-6-7/main.out](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-6-7/main.out) на тестах [test](https://github.com/RuslanGaliullin/CAaOS/tree/PHW_01/test):
-  ![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_register_programm.png)
+  - Запускаеся файл [Assembler_modified_by_me/MARK-6-7/main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.out) на тестах [test](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_02/test):
+  ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/test_for_mark_6.png)
   - Ожидаемый результат:
   
   |   Файл теста  | Массив B    |
   | :-------------: | :------------- |
-  | test01.in  | 2 4 6 8 10 12 1 3 5 7 9 11  |
-  | test02.in  | 86364 2853 78043 67895  |
-  | test03.in  | 5  |
-  | test04.in  | 59547 26552 32979 70108 22142 40904 80770 98662 75994 4516 33855 67744 26903 97734 71246 34143 43774 48545 14807 22036 26365   15669 77445 13097 49587 50279 2688 15862 27608 91362 26319 57502 29350 96354 63094 58388 22803 1876 99886 78194 81974 58512 61105 36480 20849   53683 10693 69546 37589 34626 |
+  | test01.in  | 2 11 30 38 52 58 63 |
+  | test02.in  | 0 1 2 |
+  | test03.in  | 0 2 4 6 8 10 12 |
 
   - Как можно заметить по скриншоту и ожидаемому выводу, программа работает корректно на тестах
+  - Сравнение размеров запускаемых файлов:
+  ![comparison](smth)
 ## На оценку 7
 ### Шаг № 1. Реализовать программу в виду 2 единиц компиляции
   - Это задание было выполнено в самом начале и везде приводился код из 2 файлов
