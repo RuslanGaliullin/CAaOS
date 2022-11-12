@@ -356,7 +356,7 @@ main:
 	mov	DWORD PTR -12[rbp], eax
 	add	DWORD PTR -16[rbp], 1
 .L24:
-	cmp	DWORD PTR -16[rbp], 19
+	cmp	DWORD PTR -16[rbp], 40
 	jle	.L25
 	call	clock@PLT
 	mov	QWORD PTR -40[rbp], rax
