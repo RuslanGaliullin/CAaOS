@@ -369,7 +369,7 @@ main:                                              # параметра int argc
 	mov	DWORD PTR -12[rbp], eax                     # DWORD PTR -12[rbp] - это int index_size
 	add	DWORD PTR -16[rbp], 1
 .L24:
-	cmp	DWORD PTR -16[rbp], 19
+	cmp	DWORD PTR -16[rbp], 40
 	jle	.L25
 	call	clock@PLT                               # В функцию clock не передаются никакие аргументы
                      	                            # Возвращаемое значение сохраняется в rax
