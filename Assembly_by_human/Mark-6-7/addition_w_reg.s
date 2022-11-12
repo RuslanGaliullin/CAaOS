@@ -23,9 +23,8 @@ BuildIndexArray:
 	movsx	rcx, eax
 	mov	rax, QWORD PTR -48[rbp]                     # QWORD PTR -48[rbp] - это char A[]
 	add	rcx, rax
-	mov	rax, QWORD PTR -32[rbp]                     # QWORD PTR -32[rbp] - это char sub[]
+	mov	rdi, QWORD PTR -32[rbp]                     # QWORD PTR -32[rbp] - это char sub[]
 	mov	rsi, rcx
-	mov	rdi, rax
 	call	strncmp@PLT                             # В strncmp передается char sub[], &A[i], int size_sub через rdi, rsi, rdx
 	test	eax, eax                                # возвращаемое значение сохранено в eax
 	jne	.L3
@@ -71,10 +70,8 @@ Output:
 	mov	rax, QWORD PTR -32[rbp]                     # QWORD PTR -32[rbp] - это int array[]
 	add	rax, rdx
 	mov	edx, DWORD PTR [rax]
-	mov	rax, QWORD PTR -24[rbp]                     # QWORD PTR -24[rbp] - это FILE *ofst
-	lea	rcx, .LC0[rip]
-	mov	rsi, rcx
-	mov	rdi, rax
+	mov	rdi, QWORD PTR -24[rbp]                     # QWORD PTR -24[rbp] - это FILE *ofst
+	lea	rsi, .LC0[rip]
 	mov	eax, 0
 	call	fprintf@PLT                             # в fprintf передаются FILE* ofst, char* .LC0, array[i] через rdi, rsi и rdx, возвращаемое значение сохраняется в eax, но оно не используется
 	add	r14d, 1                                     # r14d - это int i
@@ -82,8 +79,7 @@ Output:
 	mov	eax, r14d                                   # r14d - это int i
 	cmp	eax, DWORD PTR -36[rbp]                     # DWORD PTR -36[rbp] - это int size
 	jl	.L8
-	mov	rax, QWORD PTR -24[rbp]                     # QWORD PTR -24[rbp] - это FILE *ofst
-	mov	rsi, rax
+	mov	rsi, QWORD PTR -24[rbp]                     # QWORD PTR -24[rbp] - это FILE *ofst
 	mov	edi, 10
 	call	fputc@PLT                               # в fputc передаются char 10, FILE* ofst через edi и rsi, возвращаемое значение сохраняется в eax, но оно не используется
 	nop
@@ -105,8 +101,7 @@ ReadFromFile:
 	mov	eax, r14d                                   # r14d - это int i
 	cmp	eax, DWORD PTR -36[rbp]                     # DWORD PTR -36[rbp] - это int max_size
 	je	.L15
-	mov	rax, QWORD PTR -24[rbp]                     # QWORD PTR -24[rbp] - это FILE *fin
-	mov	rdi, rax
+	mov	rdi, QWORD PTR -24[rbp]                     # QWORD PTR -24[rbp] - это FILE *fin
 	call	fgetc@PLT                               # в fgetc передаются FILE *fin через rdi,
 	                                                # возвращаемое значение сохраняется в eax
 	mov	DWORD PTR -8[rbp], eax                      # DWORD PTR -8[rbp] - это int ch
@@ -151,11 +146,9 @@ ReadFromConsole:
 	sub	rsp, 16
 	mov	QWORD PTR -8[rbp], rdi                      # QWORD PTR -8[rbp] - это char A[]
 	mov	DWORD PTR -12[rbp], esi                     # DWORD PTR -12[rbp] - это int max_size
-	mov	rax, QWORD PTR stdin[rip]
+	mov	rdi, QWORD PTR stdin[rip]
 	mov	edx, DWORD PTR -12[rbp]
-	mov	rcx, QWORD PTR -8[rbp]
-	mov	rsi, rcx
-	mov	rdi, rax
+	mov	rsi, QWORD PTR -8[rbp]
 	call	ReadFromFile                            # В функцию ReadFromFile передаются аргументы stdin, char A[], int max_size,
 	                                                # возвращаемое значение сохраняется в aex
 	leave
