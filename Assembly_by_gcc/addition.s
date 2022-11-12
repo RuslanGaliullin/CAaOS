@@ -159,7 +159,7 @@ ReadFromConsole:
 	leave
 	ret
 	.size	ReadFromConsole, .-ReadFromConsole
-	.ident	"GCC: (Ubuntu 11.2.0-19ubuntu1) 11.2.0"
+	.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
 	.align 8

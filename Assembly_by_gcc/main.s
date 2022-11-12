@@ -59,7 +59,7 @@ errMessage2:
 	.section	.rodata
 	.align 8
 .LC2:
-	.string	"incorrect size of substring!\n1 <= size <= %d"
+	.string	"incorrect size of substring!\n1 <= size <= %d\n"
 	.text
 	.globl	errMessage3
 	.type	errMessage3, @function
@@ -356,7 +356,7 @@ main:
 	mov	DWORD PTR -12[rbp], eax
 	add	DWORD PTR -16[rbp], 1
 .L24:
-	cmp	DWORD PTR -16[rbp], 40
+	cmp	DWORD PTR -16[rbp], 79
 	jle	.L25
 	call	clock@PLT
 	mov	QWORD PTR -40[rbp], rax
@@ -429,7 +429,7 @@ main:
 .LC9:
 	.long	0
 	.long	1093567618
-	.ident	"GCC: (Ubuntu 11.2.0-19ubuntu1) 11.2.0"
+	.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
 	.align 8
