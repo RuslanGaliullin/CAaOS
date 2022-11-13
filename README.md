@@ -1,3 +1,4 @@
+# 24. Разработать программу, которая ищет в ASCII-строке заданную подстроку и возвращает список индексов первого символа для всех вхождений подстроки в строке. Подстрока вводится как параметр. Галиуллин Руслан БПИ217
 ## На оценку 4
 ### Шаг № 1. Программа на С
   - Написать программу на С из нескольких единиц компиляции:
@@ -39,7 +40,7 @@
 ## На оценку 5
 ### Шаг № 1. Функции
   - Используемые функции с передачей параметров: BuildIndexArray, Output, ReadFromFile, ReadFromConsole, check_sub, GenerateRandomString, main, strncmp, fprintf, fputc, fgetc, puts, printf, strlen, strcmp, fopen, fclose, strtol, strcpy, time, srand 
-  - Локальные переменные: int text_size, sub_size, index_size, int i, FILE *ifst, clock_t start, clock_t end, double calcTime, FILE * ofst1, int argc, char* argv\[\] (не писал переменные, создаваемые при передачи параметров по значению)
+  - Локальные переменные: int text_size, sub_size, index_size, int i, FILE* ifst, clock_t start, clock_t end, double calcTime, FILE* ofst1, int argc, char* argv\[\] (не писал переменные, создаваемые при передачи параметров по значению)
   - Файлы с комментарием вызовов функций:
     - [main_w_func_comm.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-5/main_w_func_comm.s)
     - [addition_w_func_comm.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-5/addition_w_func_comm.s)
@@ -64,7 +65,7 @@
   - Сравнение размеров запускаемых файлов:
 
   ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/compare_size_of_exe.png)
-  Как мы видим размер исполняемого файла существенно не изменился от размера файла, скомпилированного gcc. Количество кода в main изменилось с 449 до 440 строк, в addition со 179 до 174 строк
+  Как мы видим размер исполняемого файла существенно не изменился по сравнению с файлом, скомпилированным gcc. Количество кода в main изменилось с 449 до 440 строк, в addition со 179 до 174 строк
 ## На оценку 7
 ### Шаг № 1. Реализовать программу в виде 2 единиц компиляции
   - Это задание было выполнено в самом начале и везде приводился код из 2 файлов
@@ -173,7 +174,7 @@
  |-Os|Calculation time = 2.91244|20Кб|403 + 222|
  |моя программа с регистрами|Calculation time = 2.84221|20Кб| 440 + 174|
  
-### Шаг № 2. Сравнение размера кода на ассемблере
+### Шаг № 2. Сравнение размера исполняемых файлов и кода на ассемблере
  [Скрины с запусками](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_02/data/size_opt)
  
  [Скрин с размерами файлов](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/size_opt/size_opt_size_files.png)
