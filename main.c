@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   clock_t start = clock();
-  for (int i = 0; i < 80; ++i) {
+  for (int i = 0; i < 100; ++i) {
     index_size = BuildIndexArray(Index, Sub, sub_size, Text, text_size);
   }
   clock_t end = clock();
