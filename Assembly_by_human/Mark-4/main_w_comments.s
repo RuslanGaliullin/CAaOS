@@ -354,7 +354,7 @@ main:
 	mov	rdi, rax
 	call	BuildIndexArray@PLT
 	mov	DWORD PTR -12[rbp], eax                     # DWORD PTR -12[rbp] - это int index_size
-	add	DWORD PTR -16[rbp], 1
+	add	DWORD PTR -16[rbp], 1                       # DWORD PTR -16[rbp] - это int i
 .L24:
 	cmp	DWORD PTR -16[rbp], 99
 	jle	.L25
