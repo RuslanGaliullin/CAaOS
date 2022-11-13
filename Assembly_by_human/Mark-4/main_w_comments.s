@@ -356,7 +356,7 @@ main:
 	mov	DWORD PTR -12[rbp], eax                     # DWORD PTR -12[rbp] - это int index_size
 	add	DWORD PTR -16[rbp], 1
 .L24:
-	cmp	DWORD PTR -16[rbp], 79
+	cmp	DWORD PTR -16[rbp], 99
 	jle	.L25
 	call	clock@PLT
 	mov	QWORD PTR -40[rbp], rax                     # QWORD PTR -40[rbp] - это clock_t end
