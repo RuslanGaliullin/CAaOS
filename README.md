@@ -164,7 +164,7 @@
  [Скрин с размерами файлов](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/speed_opt/compare_size_of_speed_exe.png)
  | Параметры | Время работы | Размер исполняемого файла | Количество строк (main.s + addition.s) |
  |:--:|:---:|:---:|:---:|
- |-fno-asynchronous-unwind-tables -fno-jump-tables -fno-stack-protector -fno-exceptions -O0|Calculation time = Calculation time = 3.21016| 20Кб |449 + 179|
+ |-fno-asynchronous-unwind-tables -fno-jump-tables -fno-stack-protector -fno-exceptions -O0|Calculation time = 3.21016|20Кб|449 + 179|
  |-O1|Calculation time = 2.43094|20Кб|445 + 235|
  |-O2|Calculation time = 2.56971|20Кб|425 + 305|
  |-O3|Calculation time = 2.94647|20Кб|437 + 305|
