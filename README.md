@@ -48,8 +48,8 @@
   - Рядом с объявлением каждой функции, которая написана мной, находится комментарий о фактических параметрах функции и в конце о возвращаемом значении
 ## На оценку 6
 ### Шаг № 1. Замена на регистры
-  - Максимальное использование регистров было достигнуто использованием их для локальных переменных во вспомогательных функциях: BuildIndexArray, Output, ReadFromFile, ReadFromConsole, check_sub, GenerateRandomString. В них использовались регистры от r14d и r15d . check_sub, GenerateRandomString в файле [main_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.s), остальные во вспомогательном файле [addition_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/addition_w_reg.s). Подробно какой регистр отвечает за какую переменную написано в комментариях к коду
-### Шаг № 2. Тестирование
+  - Максимальное использование регистров было достигнуто использованием их для локальных переменных во вспомогательных функциях: BuildIndexArray, Output, ReadFromFile, ReadFromConsole, check_sub, GenerateRandomString. В них использовались регистры от r14d и r15d . check_sub, GenerateRandomString в файле [main_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.s), остальные во вспомогательном файле [addition_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/addition_w_reg.s). Подробно какой регистр отвечает за какую переменную написано в комментариях к коду. В основным замена была проделана за счет использования регистров для i в циклах.
+### Шаг № 2. Тестирование. Проверка
   - Запускаеся файл [Assembler_modified_by_me/MARK-6-7/main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.out) на тестах [test](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_02/test):
   ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/test_for_mark_6.png)
   - Ожидаемый результат:
@@ -62,7 +62,7 @@
 
   - Как можно заметить по скриншоту и ожидаемому выводу, программа работает корректно на тестах
   - Сравнение размеров запускаемых файлов:
-  ![comparison](smth)
+  ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/compare_size_of_exe.png)
 ## На оценку 7
 ### Шаг № 1. Реализовать программу в виду 2 единиц компиляции
   - Это задание было выполнено в самом начале и везде приводился код из 2 файлов
