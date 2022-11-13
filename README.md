@@ -48,9 +48,9 @@
   - Рядом с объявлением каждой функции, которая написана мной, находится комментарий о фактических параметрах функции и в конце о возвращаемом значении
 ## На оценку 6
 ### Шаг № 1. Замена на регистры
-  - Максимальное использование регистров было достигнуто использованием их для локальных переменных во вспомогательных функциях: BuildIndexArray, Output, ReadFromFile, ReadFromConsole, check_sub, GenerateRandomString. В них использовались регистры от r14d и r15d . check_sub, GenerateRandomString в файле [main_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.s), остальные во вспомогательном файле [addition_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/addition_w_reg.s). Подробно какой регистр отвечает за какую переменную написано в комментариях к коду. В основным замена была проделана за счет использования регистров для i в циклах.
+  - Максимальное использование регистров было достигнуто использованием их для локальных переменных во вспомогательных функциях: BuildIndexArray, Output, ReadFromFile, ReadFromConsole, check_sub, GenerateRandomString. В них использовались регистры от r14d и r15d . check_sub, GenerateRandomString в файле [main_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.s), остальные во вспомогательном файле [addition_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/addition_w_reg.s). Подробно какой регистр отвечает за какую переменную написано в комментариях к коду. В основным замена была проделана за счет использования регистров для i в циклах (регистры r14d, r15d, r12d, 13d)
 ### Шаг № 2. Тестирование. Проверка
-  - Запускаеся файл [Assembler_modified_by_me/MARK-6-7/main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.out) на тестах [test](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_02/test):
+  - Запускаеся файл [Assembler_modified_by_me/MARK-6-7/main_w_reg.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.out) на тестах [test](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_02/test):
   ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/test_for_mark_6.png)
   - Ожидаемый результат:
   
@@ -63,82 +63,124 @@
   - Как можно заметить по скриншоту и ожидаемому выводу, программа работает корректно на тестах
   - Сравнение размеров запускаемых файлов:
   ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/compare_size_of_exe.png)
+  Как мы видим размер исполняемого файла существенно не изменился от размера файла, скомпилированного gcc
 ## На оценку 7
 ### Шаг № 1. Реализовать программу в виду 2 единиц компиляции
   - Это задание было выполнено в самом начале и везде приводился код из 2 файлов
 ### Шаг № 2. Ввод через файл
-  - Это задание было выполнено в самом начале и тесты проганялись с помощью ввода через файл. Чтение из файла реализовано в функции ReadFromFile в [Output_input_B.c](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Output_input_B.c). Также приведу возможный ввод:
+  - Проверка на число аргументов:
+    ```
+    if (argc < 5 || argc > 6) {
+        errMessage1();
+        return 1;
+    }
+    ```
+  - Проверка на открытие файлов:
+    ```
+    FILE *ifst = fopen(argv[4], "r");
+    if (ifst == NULL) {
+      printf("Cannot open input file.\n");
+      return 3;
+    }
+    FILE *ofst1 = fopen(argv[5], "w");
+    if (ofst1 == NULL) {
+      printf("Cannot open %s to write\n", argv[5]);
+      return 1;
+    }
+    ```
+  - Это задание было выполнено в самом начале и тесты проганялись с помощью ввода через файл. Чтение из файла реализовано в функции ReadFromFile в [addition.c](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/addition.c). Также приведу возможный ввод:
     
     Waited:
     
-         command -f infile outfile            # infile - файл с исходными данными, outfile - выходные данные 
+         command -f size "word" infile outfile    # infile - файл с исходными данными, outfile - выходные данные 
          
      Or:
      
-         command -n number -c/-r outfile      # с параметром -c ввод через консоль, -r - рандомом
+         command -n size "word" -c/-r outfile       # с параметром -c ввод через консоль, -r - рандомом
+   - Итог:
+     
+     Изначально декомпозировав код на функции BuildIndexArray, Output, ReadFromFile, ReadFromConsole, возникла необходимость выделить их в отдельную единицу компиляции; все представленные выше тесты были проведены для прграммы с 2 единицами компиляции, поэтому не считаю необходимым проводить тестирование; специального формата от входного файла не требуется, нужно, чтобы его можно было прочесть + есть вывод результата в консоль, чтобы сразу увидеть результат/время работы.
 ## На оценку 8
 ### Шаг № 1. Подключить генератор рандомных чисел
-  - В файле [main.c](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/main.c), также можно посмотреть в [main.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_with_cycle_opt.s)
- 
-        void GenerateRandomArray(int size) {
-          for (int i = 0; i < size; ++i) {
-            A[i] = rand() % 100000;
-          }
-        }
+  - В файле [main.c](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/main.c), также можно посмотреть в [main.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_with_cycle_opt.s)
+    ```        
+    void GenerateRandomString(int text_size) {
+      for (int i = 0; i < text_size; i++) {
+        Text[i] = rand() % 128;
+      }
+    }
+    ```
   - Для генерации случайного набора используется команда 
 
-        command -n number -r outfile
+        command -n size "word" -r outfile
         
   - Обрабатываются введенные параметры с помощью argc, argv
+  - Итоговые способы ввода-вывода:
+      
+      a. консоль -> файл и консоль
+      
+      b. файл -> файл и консоль
+      
+      c. случайный ввод -> файл и консоль
 ### Шаг № 2. Сравнение скорости
-  - Сравним скорость программы, которая было создана без оптимизации с параметрами из [пункта](https://github.com/RuslanGaliullin/CAaOS/edit/PHW_01/README.md#шаг--2-в-ассемблер) в начале, но с циклом, который выполняет построение массива B 100 раз, запустив [main_no_opt.out](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/main_no_opt.out). Этот исполняемый файл создан при компиляции файлов [Main_no_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_cycle_no_opt.s) и [Output_input_B_not_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Output_input_cycle_no_opt.s)
+  - Сравним скорость программы, которая было создана без оптимизации с параметрами из [пункта](https://github.com/RuslanGaliullin/CAaOS/edit/IHW_02/README.md#шаг--2-в-ассемблер) в начале с программой, после ручного добавления регистров в [пункте](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/README.md#шаг--1-замена-на-регистры). Замечу, что построение искомого массива в программе выполняется 100 раз в цикле
     
-    P.S. Это те же файлы из первого пунтка, только с добавлением цикла:
-                
-                mov     r8d, 1
-                mov     QWORD PTR -24[rbp], rax             # QWORD PTR -24[rbp] - переменная clock_t start
-        Cycle:
-                mov     eax, DWORD PTR -4[rbp]              # DWORD PTR -4[rbp] - это size
-                mov     edx, eax
-                lea     rax, A[rip]
-                mov     rsi, rax
-                lea     rax, B[rip]
-                mov     rdi, rax
-                call    BuildBArray@PLT                 # В BuildBArray передаются 3 параметра через регистры
-                                                # rdi, rsi, edx: int B[], int A[], int size
-                                                # Функция ничего не возвращает
-                add     r8d, 1
-                cmp     r8d, 100
-                jne     Cycle          
-  - Вторая программа будет [main_opt.out](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/main_opt.out) скомиплированная из [main_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Main_with_cycle_opt.s) и [Output_input_B_opt.s](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/Assembler_modified_by_me/MARK-8/Output_input_B_opt.s). Последняя программа также строит массив B 100 раз + время замеряется только на этом цикле
-  - Результаты запуска на время с параметрами **-n 10000000 -r test/test01.out**: 
+    Цикл:
+         
+    ```
+         .L25:
+	           mov	edx, DWORD PTR -4[rbp]
+	           mov	eax, DWORD PTR -8[rbp]
+	           mov	r8d, edx
+	           lea	rdx, Text[rip]
+	           mov	rcx, rdx
+	           mov	edx, eax
+		         lea	rax, Sub[rip]
+		         mov	rsi, rax
+		         lea	rax, Index[rip]
+		         mov	rdi, rax
+		         call	BuildIndexArray@PLT
+		         mov	DWORD PTR -12[rbp], eax
+	           add	DWORD PTR -16[rbp], 1
+         .L24:
+		         cmp	DWORD PTR -16[rbp], 99
+		         jle	.L25
+     ```
+  - Получается сравниваются 2 программы по скорости: [main_w_reg.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.out) и [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_gcc/main.out). Остальные написанные программы сравнивать бессмысленно так как комментарии, которые я добавлял никак не влияют на скорость выполнения программы и их результат идентичен [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_gcc/main.out)
+  - Результаты запуска на время с параметрами **-n 1 "a" -r ../../test/test_random.out**: 
  
- |     | main_opt.out (оптимизация регистрами) | main_no_opt.out (без какой либо оптимизации)|
+ |      | main_w_reg.out (оптимизация регистрами) | main.out (без какой либо оптимизации) |
  |:-----:|:---------------------------------------:|:---------------------------------------------:|
- |Команда|./main_opt.out -n 10000000 -r test/test_opt.out|./main_no_opt.out -n 10000000 -r test/test_no_opt.out|
- |Время|Calculation time = 2.60638|Calculation time = 2.94435|
- |Пруфы|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/Test_opt_time.png)|![](https://github.com/RuslanGaliullin/CAaOS/blob/PHW_01/data/No_opt_time.png)|
+ |Команда|main_w_reg.out -n 1 "a" -r ../../test/test_random.out|main.out -n 1 "a" -r ../../test/test_random.out |
+ |Время|Calculation time = 2.84221|Calculation time = 3.21016|
+ |Пруфы|![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/register_opt_random_test.png)|![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/no_opt_random_test.png)|
  
  - Вывод: у нас удалось улучшить скорость работы алогоритма за счет использования регистров вместо памяти на стеке
  ## На оценку 9
  ### Шаг № 1. Сравнение времени работы
- - [Скрины](https://github.com/RuslanGaliullin/CAaOS/tree/PHW_01/data)
+ [Скрины с запусками](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_02/data/speed_opt)
  
- | Параметры | Время работы |  Количество строк (main.s + Output_input_B.s) |
- |:--:|:---:|:---:|
- |-fno-asynchronous-unwind-tables -fno-jump-tables -fno-stack-protector -fno-exceptions -O0|Calculation time = 2.94435|414 + 229|
- |-O1|Calculation time = 0.032683|375 + 249|
- |-O2|Calculation time = 0.034351|372 + 261|
- |-O3|Calculation time = 0.032118|403 + 261|
- |-Ofast|Calculation time = 0.029173|403 + 261|
- |-O0|Calculation time = 0.039069|426 + 268|
- |-Os|Calculation time = 0.028374|333 + 243|
+ [Скрин с размерами файлов](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/speed_opt/compare_size_of_speed_exe.png)
+ | Параметры | Время работы | Размер исполняемого файла | Количество строк (main.s + addition.s) |
+ |:--:|:---:|:---:|:---:|
+ |-fno-asynchronous-unwind-tables -fno-jump-tables -fno-stack-protector -fno-exceptions -O0|Calculation time = Calculation time = 3.21016| 20Кб |449 + 179|
+ |-O1|Calculation time = 2.43094| 20Кб |445 + 235|
+ |-O2|Calculation time = 2.56971| 20Кб |425 + 305|
+ |-O3|Calculation time = 2.94647| 20Кб |437 + 305|
+ |-Ofast|Calculation time = 2.54926| 20Кб |437 + 305|
+ |-O0|Calculation time = 3.22262| 20Кб |496 + 210|
+ |-Os|Calculation time = 2.91244| 20Кб |403 + 222|
+ |register|Calculation time = 2.84221| 20Кб | 440 + 174|
  
 ### Шаг № 2. Сравнение размера кода на ассемблере
-| Параметры | Количество строк (main.s + Output_input_B.s) | время работы|
- |:--:|:---:|:--:|
- |без параметров|453 + 268|Calculation time = 0.045827|
- |-ffunction-sections -Wl,--gc-sections|454 + 270|Calculation time = 0.046978|
- |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|414 + 238|Calculation time = 0.045296|
- |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|414 + 238|Calculation time = 0.046244|
+ [Скрины с запусками](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_02/data/size_opt)
+ 
+ [Скрин с размерами файлов](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/size_opt/size_opt_size_files.png)
+ | № | Параметры | Время работы | Размер исполняемого файла | Количество строк (main.s + addition.s) |
+ |:--:|:--:|:---:|:--:|:--:|
+ | 1 |без параметров|Calculation time = 0.045827|20Кб|496 + 210|
+ | 2 |-ffunction-sections -Wl,--gc-sections|Calculation time = 3.21151|20Кб|498 + 213|
+ | 3 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|Calculation time = 3.19093|20Кб|450 + 181|
+ | 4 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 3.19991|16Кб|450 + 181|
+ | 5 |register|Calculation time = 2.84221| 20Кб | 440 + 174|
 
