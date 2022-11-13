@@ -25,7 +25,7 @@
 
 
   ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/tests_for_mark_4.png)
-- Тесты находятся в [test](https://github.com/RuslanGaliullin/CAaOS/tree/PHW_01/test)
+- Тесты находятся в [test](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_02/test)
 - Ожидаемые выводы (массива В) для каждого теста:
 
 
