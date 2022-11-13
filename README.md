@@ -164,13 +164,13 @@
  | Параметры | Время работы | Размер исполняемого файла | Количество строк (main.s + addition.s) |
  |:--:|:---:|:---:|:---:|
  |-fno-asynchronous-unwind-tables -fno-jump-tables -fno-stack-protector -fno-exceptions -O0|Calculation time = Calculation time = 3.21016| 20Кб |449 + 179|
- |-O1|Calculation time = 2.43094| 20Кб |445 + 235|
- |-O2|Calculation time = 2.56971| 20Кб |425 + 305|
- |-O3|Calculation time = 2.94647| 20Кб |437 + 305|
- |-Ofast|Calculation time = 2.54926| 20Кб |437 + 305|
- |-O0|Calculation time = 3.22262| 20Кб |496 + 210|
- |-Os|Calculation time = 2.91244| 20Кб |403 + 222|
- |register|Calculation time = 2.84221| 20Кб | 440 + 174|
+ |-O1|Calculation time = 2.43094|20Кб|445 + 235|
+ |-O2|Calculation time = 2.56971|20Кб|425 + 305|
+ |-O3|Calculation time = 2.94647|20Кб|437 + 305|
+ |-Ofast|Calculation time = 2.54926|20Кб|437 + 305|
+ |-O0|Calculation time = 3.22262|20Кб|496 + 210|
+ |-Os|Calculation time = 2.91244|20Кб|403 + 222|
+ |register|Calculation time = 2.84221|20Кб| 440 + 174|
  
 ### Шаг № 2. Сравнение размера кода на ассемблере
  [Скрины с запусками](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_02/data/size_opt)
@@ -181,6 +181,6 @@
  | 1 |без параметров|Calculation time = 0.045827|20Кб|496 + 210|
  | 2 |-ffunction-sections -Wl,--gc-sections|Calculation time = 3.21151|20Кб|498 + 213|
  | 3 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|Calculation time = 3.19093|20Кб|450 + 181|
- | 4 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 3.19991| 16Кб (ура!!) |450 + 181|
+ | 4 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 3.19991|16Кб|450 + 181|
  | 5 |register|Calculation time = 2.84221| 20Кб | 440 + 174|
 
