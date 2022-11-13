@@ -346,7 +346,7 @@ main:                                              # параметра int argc
 	mov	r12d, eax                                   # r12d - это int index_size
 	add	r9d, 1                                      # r9d - это int i
 .L24:
-	cmp	r9d, 79                                     # r9d - это int i
+	cmp	r9d, 99                                     # r9d - это int i
 	jle	.L25
 	call	clock@PLT                               # В функцию clock не передаются никакие аргументы
                      	                            # Возвращаемое значение сохраняется в rax
