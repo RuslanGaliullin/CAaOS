@@ -136,16 +136,16 @@
 	           lea	rdx, Text[rip]
 	           mov	rcx, rdx
 	           mov	edx, eax
-		         lea	rax, Sub[rip]
-		         mov	rsi, rax
-		         lea	rax, Index[rip]
-		         mov	rdi, rax
-		         call	BuildIndexArray@PLT
-		         mov	DWORD PTR -12[rbp], eax
+		   lea	rax, Sub[rip]
+		   mov	rsi, rax
+		   lea	rax, Index[rip]
+		   mov	rdi, rax
+		   call	BuildIndexArray@PLT
+		   mov	DWORD PTR -12[rbp], eax
 	           add	DWORD PTR -16[rbp], 1
          .L24:
-		         cmp	DWORD PTR -16[rbp], 99
-		         jle	.L25
+		   cmp	DWORD PTR -16[rbp], 99
+		   jle	.L25
      ```
   - Получается сравниваются 2 программы по скорости: [main_w_reg.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_human/Mark-6-7/main_w_reg.out) и [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_gcc/main.out). Остальные написанные программы сравнивать бессмысленно так как комментарии, которые я добавлял никак не влияют на скорость выполнения программы и их результат идентичен [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/Assembly_by_gcc/main.out)
   - Результаты запуска на время с параметрами **-n 1 "a" -r ../../test/test_random.out**: 
@@ -179,7 +179,7 @@
  [Скрин с размерами файлов](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_02/data/size_opt/size_opt_size_files.png)
  | № | Параметры | Время работы | Размер исполняемого файла | Количество строк (main.s + addition.s) |
  |:--:|:--:|:---:|:--:|:--:|
- | 1 |без параметров|Calculation time = 0.045827|20Кб|496 + 210|
+ | 1 |без параметров|Calculation time = 3.20992|20Кб|496 + 210|
  | 2 |-ffunction-sections -Wl,--gc-sections|Calculation time = 3.21151|20Кб|498 + 213|
  | 3 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|Calculation time = 3.19093|20Кб|450 + 181|
  | 4 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 3.19991|16Кб|450 + 181|
