@@ -171,7 +171,7 @@
  |-Ofast|Calculation time = 2.54926|20Кб|437 + 305|
  |-O0|Calculation time = 3.22262|20Кб|496 + 210|
  |-Os|Calculation time = 2.91244|20Кб|403 + 222|
- |register|Calculation time = 2.84221|20Кб| 440 + 174|
+ |моя программа с регистрами|Calculation time = 2.84221|20Кб| 440 + 174|
  
 ### Шаг № 2. Сравнение размера кода на ассемблере
  [Скрины с запусками](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_02/data/size_opt)
@@ -183,5 +183,5 @@
  | 2 |-ffunction-sections -Wl,--gc-sections|Calculation time = 3.21151|20Кб|498 + 213|
  | 3 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|Calculation time = 3.19093|20Кб|450 + 181|
  | 4 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 3.19991|16Кб|450 + 181|
- | 5 |register|Calculation time = 2.84221| 20Кб | 440 + 174|
+ | 5 |моя программа с регистрами|Calculation time = 2.84221| 20Кб | 440 + 174|
 
