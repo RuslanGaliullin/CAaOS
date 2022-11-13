@@ -181,6 +181,6 @@
  | 1 |без параметров|Calculation time = 0.045827|20Кб|496 + 210|
  | 2 |-ffunction-sections -Wl,--gc-sections|Calculation time = 3.21151|20Кб|498 + 213|
  | 3 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|Calculation time = 3.19093|20Кб|450 + 181|
- | 4 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 3.19991|16Кб|450 + 181|
+ | 4 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 3.19991|16Кб (ура) |450 + 181|
  | 5 |register|Calculation time = 2.84221| 20Кб | 440 + 174|
 
