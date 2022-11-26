@@ -40,7 +40,7 @@
 - Как можно заметить по скриншоту и ожидаемому выводу, обе программы дают одинаковый, а главное правильный результат
 ## На оценку 5
 ### Шаг № 1. Функции
-  - Используемые функции с передачей параметров: Output, CheckCircle, CheckSimilarPoints, FindCenter, ReadFromFile, main, fprintf, printf, strcmp, fopen, fclose, fscanf, time, srand, putchar
+  - Используемые функции с передачей параметров: Output, CheckCircle, CheckSimilarPoints, FindCenter, ReadFromFile, main, fprintf, printf, strcmp, fopen, fclose, fscanf, time, srand, putchar, puts
   - Локальные переменные: idouble cx01, double cy01, double dx01, double dy01, double mx01, double my01, double cx12, double cy12, double dx12, double dy12, double mx12, double my12, double center_x, double center_y, double distance_1, double distance_2, int i, double proportion, double c1, double c2, int result, FILE *ifst, clock_t start, clock_t end, FILE* ofst (не писал переменные, создаваемые при передачи параметров по значению)
   - Файлы с комментарием вызовов функций:
     - [main_w_func_comm.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-5/main_w_func_comm.s)
@@ -48,74 +48,81 @@
 ### Шаг №2. Изменения
   - Для каждого вызова call написан комментарий рядом с вызовом функции о способе передаче параметров в функцию и сохранении возвращаемого значения
   - Рядом с объявлением каждой функции, которая написана мной, находится комментарий о фактических параметрах функции и в конце о возвращаемом значении
+  - Через что передаются аргументы в формальные параметры написано рядом с объявлением соответствующих локальных переменных
 ## На оценку 6
 ### Шаг № 1. Замена на регистры
-  - Максимальное использование регистров было достигнуто использованием их для локальных переменных во вспомогательных функциях: BuildIndexArray, Output, ReadFromFile, ReadFromConsole, check_sub, GenerateRandomString. В них использовались регистры от r14d и r15d . check_sub, GenerateRandomString в файле [main_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/main_w_reg.s), остальные во вспомогательном файле [addition_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/addition_w_reg.s). Подробно какой регистр отвечает за какую переменную написано в комментариях к коду. В основным замена была проделана за счет использования регистров для i в циклах (регистры r14d, r15d, r12d, 13d)
+  - Максимальное использование регистров было достигнуто использованием их для локальных переменных во вспомогательных функциях: GenerateRandomCoordinates, main, CheckSimilarPoints, ReadFromFile. В них использовались регистры от r13d, r14d и r15d. GenerateRandomCoordinates, main в файле [main_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/main_w_reg.s), остальные во вспомогательном файле [addition_w_reg.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/addition_w_reg.s). Подробно какой регистр отвечает за какую переменную написано в комментариях к коду. В основным замена была проделана за счет использования регистров для i в циклах (регистры r13d, r14d, r15d)
 ### Шаг № 2. Тестирование. Проверка
   - Запускаеся файл [Assembler_modified_by_me/MARK-6-7/main_w_reg.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/main_w_reg.out) на тестах [test](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/test):
-  ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/test_for_mark_6.png)
+  ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/output_test_mark_6.png)
   - Ожидаемый результат:
   
-  |   Файл теста  | Массив B    |
+  |   Файл теста  | Результат |
   | :-------------: | :------------- |
-  | test01.in  | 2 11 30 38 52 58 63 |
-  | test02.in  | 0 1 2 |
-  | test03.in  | 0 2 4 6 8 10 12 |
+  | test01.in  | лежат на одной окружности |
+  | test02.in  | лежат на одной окружности |
+  | test03.in  | не лежат на одной окружности |
+  | test04.in  | лежат на одной окружности |
 
   - Как можно заметить по скриншоту и ожидаемому выводу, программа работает корректно на тестах
   - Сравнение размеров запускаемых файлов:
 
-  ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/compare_size_of_exe.png)
-  Как мы видим размер исполняемого файла существенно не изменился по сравнению с файлом, скомпилированным gcc. Количество кода в main изменилось с 449 до 440 строк, в addition со 179 до 174 строк
+  ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/exe_size_compare.png)
+  Как мы видим размер исполняемого файла существенно не изменился по сравнению с файлом, скомпилированным gcc без оптимизаций
 ## На оценку 7
 ### Шаг № 1. Реализовать программу в виде 2 единиц компиляции
   - Это задание было выполнено в самом начале и везде приводился код из 2 файлов
 ### Шаг № 2. Ввод через файл
   - Проверка на число аргументов:
     ```
-    if (argc < 5 || argc > 6) {
-        errMessage1();
-        return 1;
+    if (argc != 3 && argc != 4) {
+    	errMessage1();
+    	return 1;
     }
     ```
   - Проверка на открытие файлов:
     ```
-    FILE *ifst = fopen(argv[4], "r");
+    FILE *ifst = fopen(argv[2], "r");
     if (ifst == NULL) {
-      printf("Cannot open input file.\n");
+      printf("Cannot open input file %s\n", argv[2]);
       return 3;
     }
-    FILE *ofst1 = fopen(argv[5], "w");
-    if (ofst1 == NULL) {
-      printf("Cannot open %s to write\n", argv[5]);
-      return 1;
+    FILE *ofst = fopen(argv[argc - 1], "w");
+    if (ofst == NULL) {
+    	printf("Cannot open %s to write\n", argv[argc - 1]);
+    	return 1;
     }
     ```
   - Это задание было выполнено в самом начале и тесты прогонялись с помощью ввода через файл. Чтение из файла реализовано в функции ReadFromFile в [addition.c](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/addition.c). Также приведу возможный ввод:
     
     Waited:
     
-         command -f size "word" infile outfile    # infile - файл с исходными данными, outfile - выходные данные 
+              command -c outfile
+              in console: x0 y0 x1 y1 x2 y2 x3 y4
          
      Or:
      
-         command -n size "word" -c/-r outfile       # с параметром -c ввод через консоль, -r - рандомом
+              command -r outfile
+     Or:
+     
+              command -f infile outfile
    - Итог:
      
-     Изначально декомпозировав код на функции BuildIndexArray, Output, ReadFromFile, ReadFromConsole, возникла необходимость выделить их в отдельную единицу компиляции; все представленные выше тесты были проведены для прграммы с 2 единицами компиляции, поэтому нтестирование эквивалентно тестированию [Assembler_modified_by_me/MARK-6-7/main_w_reg.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/main_w_reg.out) в [пункте](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/README.md#шаг--2-тестирование-проверка); специального формата от входного файла не требуется, нужно, чтобы его можно было прочесть + есть вывод результата в консоль, чтобы сразу увидеть результат/время работы.
+     Изначально декомпозировав код на функции CheckCircle, CheckSimilarPoints, ReadFromFile, FindCenter, Output возникла необходимость выделить их в отдельную единицу компиляции; все представленные выше тесты были проведены для прграммы с 2 единицами компиляции, поэтому нтестирование эквивалентно тестированию [Assembler_modified_by_me/MARK-6-7/main_w_reg.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/main_w_reg.out) в [пункте](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/README.md#шаг--2-тестирование-проверка); специального формата от входного файла не требуется, нужно, чтобы его можно было прочесть + есть вывод результата в консоль, чтобы сразу увидеть результат/время работы.
 ## На оценку 8
 ### Шаг № 1. Подключить генератор рандомных чисел
   - В файле [main.c](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/main.c), также можно посмотреть в [main.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_gcc/main.s)
-    ```        
-    void GenerateRandomString(int text_size) {
-      for (int i = 0; i < text_size; i++) {
-        Text[i] = rand() % 128;
-      }
+    ``` 
+    void GenerateRandomCoordinates() {
+  	    for (int i = 0; i < 4; ++i) {
+	       X[i] = rand() % 100;
+	       Y[i] = rand() % 100;
+  	    }
     }
     ```
   - Для генерации случайного набора используется команда 
 
-        command -n size "word" -r outfile
+        command -r outfile
         
   - Обрабатываются введенные параметры с помощью argc, argv
   - Итоговые способы ввода-вывода:
@@ -131,32 +138,32 @@
     Цикл:
          
     ```
-         .L25:
-	           mov	edx, DWORD PTR -4[rbp]
-	           mov	eax, DWORD PTR -8[rbp]
-	           mov	r8d, edx
-	           lea	rdx, Text[rip]
-	           mov	rcx, rdx
-	           mov	edx, eax
-		   lea	rax, Sub[rip]
-		   mov	rsi, rax
-		   lea	rax, Index[rip]
-		   mov	rdi, rax
-		   call	BuildIndexArray@PLT
-		   mov	DWORD PTR -12[rbp], eax
-	           add	DWORD PTR -16[rbp], 1
-         .L24:
-		   cmp	DWORD PTR -16[rbp], 99
-		   jle	.L25
+    .L25:
+    mov	edx, DWORD PTR -4[rbp]
+    mov	eax, DWORD PTR -8[rbp]
+    mov	r8d, edx
+    lea	rdx, Text[rip]
+    mov	rcx, rdx
+    mov	edx, eax
+    lea	rax, Sub[rip]
+    mov	rsi, rax
+    lea	rax, Index[rip]
+    mov	rdi, rax
+    call	BuildIndexArray@PLT
+    mov	DWORD PTR -12[rbp], eax
+    add	DWORD PTR -16[rbp], 1
+    .L24:
+    cmp	DWORD PTR -16[rbp], 99
+    jle	.L25
      ```
   - Получается сравниваются 2 программы по скорости: [main_w_reg.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/main_w_reg.out) и [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_gcc/main.out). Остальные написанные программы сравнивать бессмысленно так как комментарии, которые я добавлял никак не влияют на скорость выполнения программы и их результат идентичен [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_gcc/main.out)
   - Результаты запуска на время с параметрами **-n 1 "a" -r ../../test/test_random.out**: 
  
  |      | main_w_reg.out (оптимизация регистрами) | main.out (без какой либо оптимизации) |
  |:-----:|:---------------------------------------:|:---------------------------------------------:|
- |Команда|main_w_reg.out -n 1 "a" -r ../../test/test_random.out|main.out -n 1 "a" -r ../../test/test_random.out |
- |Время|Calculation time = 2.84221|Calculation time = 3.21016|
- |Пруфы|![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/register_opt_random_test.png)|![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/no_opt_random_test.png)|
+ | Команда | Mark-6-7/main_w_reg.out -r test/test_random.out | Assembly_by_gcc/main.out -r test/test_random.out |
+ | Время | Calculation time = 2.20377 | Calculation time = 2.41889 |
+ | Пруфы |![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/register_opt_random_test.png)|![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/no_opt_random_test.png)|
  
  - Вывод: у нас удалось улучшить скорость работы алогоритма за счет использования регистров вместо памяти на стеке
  ## На оценку 9
