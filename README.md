@@ -133,29 +133,7 @@
       
       c. случайный ввод -> файл и консоль
 ### Шаг № 2. Сравнение скорости
-  - Сравним скорость программы, которая была создана без оптимизации с параметрами из [пункта](https://github.com/RuslanGaliullin/CAaOS/edit/IHW_03/README.md#шаг--2-в-ассемблер) в начале с программой после ручного добавления регистров в [пункте на оценку 6](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03#на-оценку-6). Замечу, что построение искомого массива в программе выполняется 100 раз в цикле
-    
-    Цикл:
-         
-    ```
-    .L25:
-    mov	edx, DWORD PTR -4[rbp]
-    mov	eax, DWORD PTR -8[rbp]
-    mov	r8d, edx
-    lea	rdx, Text[rip]
-    mov	rcx, rdx
-    mov	edx, eax
-    lea	rax, Sub[rip]
-    mov	rsi, rax
-    lea	rax, Index[rip]
-    mov	rdi, rax
-    call	BuildIndexArray@PLT
-    mov	DWORD PTR -12[rbp], eax
-    add	DWORD PTR -16[rbp], 1
-    .L24:
-    cmp	DWORD PTR -16[rbp], 99
-    jle	.L25
-     ```
+  - Сравним скорость программы, которая была создана без оптимизации с параметрами из [пункта](https://github.com/RuslanGaliullin/CAaOS/edit/IHW_03/README.md#шаг--2-в-ассемблер) в начале с программой после ручного добавления регистров в [пункте на оценку 6](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03#на-оценку-6). Замечу, что построение искомого массива в программе выполняется 60000000 раз в цикле
   - Получается сравниваются 2 программы по скорости: [main_w_reg.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/main_w_reg.out) и [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_gcc/main.out). Остальные написанные программы сравнивать бессмысленно так как комментарии, которые я добавлял никак не влияют на скорость выполнения программы и их результат идентичен [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_gcc/main.out)
   - Результаты запуска на время с параметрами **-r -r test/test_random.out**: 
  
@@ -163,7 +141,7 @@
  |:-----:|:---------------------------------------:|:---------------------------------------------:|
  | Команда | Mark-6-7/main_w_reg.out -r test/test_random.out | Assembly_by_gcc/main.out -r test/test_random.out |
  | Время | Calculation time = 2.20377 | Calculation time = 2.41889 |
- | Пруфы |![]|![]|
+ | Пруфы |![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/register_opt_random_test.png)|![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/no_opt_random_test.png)|
  
  - Вывод: у нас удалось улучшить скорость работы алогоритма за счет использования регистров вместо памяти на стеке
  ## На оценку 9
