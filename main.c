@@ -12,12 +12,12 @@ void errMessage1() {
          "  Or:\n"
          "     command -r outfile"
          "  Or:\n"
-         "     command -f infile outfile");
+         "     command -f infile outfile\n");
 }
 void errMessage2() {
   printf("incorrect data in the input file or in console!\n"
          "  Waited:\n"
-         "     x0 y0 x1 y1 x2 y2 x3 y4");
+         "     x0 y0 x1 y1 x2 y2 x3 y4\n");
 }
 void GenerateRandomCoordinates() {
   for (int i = 0; i < 4; ++i) {
