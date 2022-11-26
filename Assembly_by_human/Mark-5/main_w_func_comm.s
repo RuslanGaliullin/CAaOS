@@ -1,29 +1,23 @@
 	.file	"main.c"
 	.intel_syntax noprefix
 	.text
-	.globl	Text
+	.globl	X
 	.bss
 	.align 32
-	.type	Text, @object
-	.size	Text, 10000000          # Массив Text из 10000000 char
-Text:
-	.zero	10000000
-	.globl	Sub
+	.type	X, @object
+	.size	X, 32
+X:
+	.zero	32                      # Массив X из 4 double, равных 0
+	.globl	Y
 	.align 32
-	.type	Sub, @object
-	.size	Sub, 10000000           # Массив Sub из 10000000 char
-Sub:
-	.zero	10000000
-	.globl	Index
-	.align 32
-	.type	Index, @object
-	.size	Index, 40000000         # Массив Index из 10000000 int
-Index:
-	.zero	40000000
+	.type	Y, @object
+	.size	Y, 32
+Y:
+	.zero	32                      # Массив Y из 4 double, равных 0
 	.section	.rodata
 	.align 8
 .LC0:
-	.string	"incorrect command line!\n  Waited:\n     command -f size \"word\" infile outfile\n  Or:\n     command -n size \"word\" -c/-r outfile"
+	.string	"incorrect command line!\n  Waited:\n     command -c outfile     in console: x0 y0 x1 y1 x2 y2 x3 y4  Or:\n     command -r outfile  Or:\n     command -f infile outfile"
 	.text
 	.globl	errMessage1
 	.type	errMessage1, @function
@@ -33,15 +27,16 @@ errMessage1:
 	mov	rbp, rsp
 	lea	rax, .LC0[rip]
 	mov	rdi, rax
-	call	puts@PLT                # в puts передается строка char* .LC0 через rdi, возвращаемое значение сохраняется в eax, но не используется
-	nop
+	mov	eax, 0
+	call	printf@PLT                           # Через регистр rdi передается строка .LC0
+	nop                                          # возвращаемое значение в eax, но оно не используется
 	pop	rbp
-	ret                             # нет возвращаемого значения
+	ret
 	.size	errMessage1, .-errMessage1
 	.section	.rodata
 	.align 8
 .LC1:
-	.string	"the specified length of the substring does not correspond to reality"
+	.string	"incorrect data in the input file or in console!\n  Waited:\n     x0 y0 x1 y1 x2 y2 x3 y4"
 	.text
 	.globl	errMessage2
 	.type	errMessage2, @function
@@ -51,402 +46,296 @@ errMessage2:
 	mov	rbp, rsp
 	lea	rax, .LC1[rip]
 	mov	rdi, rax
-	call	puts@PLT                # в puts передается строка char* .LC1 через rdi, возвращаемое значение сохраняется в eax, но не используется
-	nop
-	pop	rbp
-	ret                             # нет возвращаемого значения
-	.size	errMessage2, .-errMessage2
-	.section	.rodata
-	.align 8
-.LC2:
-	.string	"incorrect size of substring!\n1 <= size <= %d\n"
-	.text
-	.globl	errMessage3
-	.type	errMessage3, @function
-errMessage3:
-	endbr64
-	push	rbp
-	mov	rbp, rsp
-	mov	esi, 10000000
-	lea	rax, .LC2[rip]
-	mov	rdi, rax
 	mov	eax, 0
-	call	printf@PLT                  # в printf передается строка char* .LC2 через rdi и 10000000 через rsi, возвращаемое значение сохраняется в eax, но оно не используется
-	nop
+	call	printf@PLT                           # Через регистр rdi передается строка .LC1
+	nop                                          # возвращаемое значение в eax, но оно не используется
 	pop	rbp
-	ret                                 # нет возвращаемого значения
-	.size	errMessage3, .-errMessage3
-	.globl	check_sub
-	.type	check_sub, @function
-check_sub:                              # параметр int real_size(DWORD PTR -4[rbp]) передается через edi
-                                        # char* str(DWORD PTR -16[rbp]) передается через rsi
+	ret
+	.size	errMessage2, .-errMessage2
+	.globl	GenerateRandomCoordinates
+	.type	GenerateRandomCoordinates, @function
+GenerateRandomCoordinates:
 	endbr64
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 16
-	mov	DWORD PTR -4[rbp], edi          # DWORD PTR -4[rbp]  - это int real_size
-	mov	QWORD PTR -16[rbp], rsi         # QWORD PTR -16[rbp] - это char *str
-	mov	rax, QWORD PTR -16[rbp]
-	mov	rdi, rax
-	call	strlen@PLT                  # в strlen передается строка char* str из QWORD PTR -16[rbp] через rdi
-	mov	edx, DWORD PTR -4[rbp]          # DWORD PTR -4[rbp]  - это int real_size
-	movsx	rdx, edx
-	cmp	rax, rdx
-	setne	al
-	movzx	eax, al
-	leave
-	ret                                 # возвращается результат сравнения strlen(str) != real_size через eax
-	.size	check_sub, .-check_sub
-	.globl	GenerateRandomString
-	.type	GenerateRandomString, @function
-GenerateRandomString:                       # параметр int text_size(DWORD PTR -20[rbp]) передается через edi
-	endbr64
-	push	rbp
-	mov	rbp, rsp
-	sub	rsp, 32
-	mov	DWORD PTR -20[rbp], edi             # DWORD PTR -20[rbp] - int text_size локальная в функции GenerateRandomString
-	mov	DWORD PTR -4[rbp], 0                # DWORD PTR -4[rbp] - это переменная int i = 0
-	jmp	.L7
-.L8:
-	call	rand@PLT                        # аргументы в rand() не передаются, возвращаемое значение сохраняется в eax
-	cdq
-	shr	edx, 25
-	add	eax, edx
-	and	eax, 127
-	sub	eax, edx
+	mov	DWORD PTR -4[rbp], 0                            # DWORD PTR -4[rbp] - это int i
+	jmp	.L4
+.L5:
+	call	rand@PLT                                    # Не передаются аргументы
+	movsx	rdx, eax                                    # возвращаемое значение в eax
+	imul	rdx, rdx, 1374389535
+	shr	rdx, 32
+	sar	edx, 5
 	mov	ecx, eax
-	mov	eax, DWORD PTR -4[rbp]              # DWORD PTR -4[rbp] - это переменная int i
+	sar	ecx, 31
+	sub	edx, ecx
+	imul	ecx, edx, 100
+	sub	eax, ecx
+	mov	edx, eax
+	pxor	xmm0, xmm0
+	cvtsi2sd	xmm0, edx
+	mov	eax, DWORD PTR -4[rbp]                          # DWORD PTR -4[rbp] - это int i
 	cdqe
-	lea	rdx, Text[rip]
-	mov	BYTE PTR [rax+rdx], cl
-	add	DWORD PTR -4[rbp], 1                # DWORD PTR -4[rbp] - это переменная int i
-.L7:
-	mov	eax, DWORD PTR -4[rbp]              # DWORD PTR -4[rbp] - это переменная int i
-	cmp	eax, DWORD PTR -20[rbp]             # DWORD PTR -20[rbp] - int text_size локальная в функции GenerateRandomString
-	jl	.L8
+	lea	rdx, 0[0+rax*8]
+	lea	rax, X[rip]                                    # X[rip] - указатель на начало массива X
+	movsd	QWORD PTR [rdx+rax], xmm0                  # QWORD PTR [rdx+rax] обращение к X[i]
+	call	rand@PLT                                   # Не передаются аргументы
+	movsx	rdx, eax                                   # возвращаемое значение в eax
+	imul	rdx, rdx, 1374389535
+	shr	rdx, 32
+	sar	edx, 5
+	mov	ecx, eax
+	sar	ecx, 31
+	sub	edx, ecx
+	imul	ecx, edx, 100
+	sub	eax, ecx
+	mov	edx, eax
+	pxor	xmm0, xmm0
+	cvtsi2sd	xmm0, edx
+	mov	eax, DWORD PTR -4[rbp]                          # DWORD PTR -4[rbp] - это int i
+	cdqe
+	lea	rdx, 0[0+rax*8]
+	lea	rax, Y[rip]                                     # Y[rip] - указатель на начало массива Y
+	movsd	QWORD PTR [rdx+rax], xmm0                   # QWORD PTR [rdx+rax] обращение к Y[i]
+	add	DWORD PTR -4[rbp], 1                            # DWORD PTR -4[rbp] - это int i
+.L4:
+	cmp	DWORD PTR -4[rbp], 3                            # DWORD PTR -4[rbp] - это int i
+	jle	.L5
 	nop
 	nop
 	leave
-	ret                                     # нет возвращаемого значения
-	.size	GenerateRandomString, .-GenerateRandomString
+	ret
+	.size	GenerateRandomCoordinates, .-GenerateRandomCoordinates
 	.section	.rodata
-.LC3:
+.LC2:
 	.string	"-f"
-.LC4:
+.LC3:
 	.string	"r"
+.LC4:
+	.string	"Cannot open input file %s\n"
 .LC5:
-	.string	"Cannot open input file."
+	.string	"-c"
 .LC6:
-	.string	"-n"
-.LC7:
 	.string	"-r"
 .LC8:
-	.string	"-c"
-.LC10:
 	.string	"w"
-.LC11:
+.LC9:
 	.string	"Cannot open %s to write\n"
-.LC12:
-	.string	"Calculation time = %g\n"
-.LC13:
+.LC10:
 	.string	"\nCalculation time = %g\n"
 	.text
 	.globl	main
 	.type	main, @function
-main:                                              # параметра int argc(DWORD PTR -68[rbp]) передается через edi
-                                                   # параметра char* argv[](QWORD PTR -80[rbp]) передается через rsi
+main:
 	endbr64
 	push	rbp
 	mov	rbp, rsp
-	sub	rsp, 80
-	mov	DWORD PTR -68[rbp], edi                   # DWORD PTR -68[rbp] - это int argc
-	mov	QWORD PTR -80[rbp], rsi                   # QWORD PTR -80[rbp] - это char *argv[]
-	cmp	DWORD PTR -68[rbp], 4
-	jle	.L10
-	cmp	DWORD PTR -68[rbp], 6
-	jle	.L11
-.L10:
+	sub	rsp, 64
+	mov	DWORD PTR -52[rbp], edi                              # DWORD PTR -52[rbp] - это int argc
+	mov	QWORD PTR -64[rbp], rsi                              # QWORD PTR -64[rbp] - это char *argv[]
+	cmp	DWORD PTR -52[rbp], 3                                # DWORD PTR -52[rbp] - это int argc
+	je	.L7
+	cmp	DWORD PTR -52[rbp], 4                                # DWORD PTR -52[rbp] - это int argc
+	je	.L7
 	mov	eax, 0
-	call	errMessage1                            # вызов функции errMessage1 без аргументов, у функции нет возвращаемого значения
-	mov	eax, 1
-	jmp	.L12
-.L11:
-	mov	rax, QWORD PTR -80[rbp]                    # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 8
+	call	errMessage1                                      # Не передаются аргументы
+	mov	eax, 1                                               # нет возвращаемого значения
+	jmp	.L8
+.L7:
+	mov	DWORD PTR -4[rbp], 0                                 # DWORD PTR -4[rbp] - int result
+	mov	rax, QWORD PTR -64[rbp]                              # QWORD PTR -64[rbp] - это char *argv[]
+	add	rax, 8                                               # argv[1]
+	mov	rax, QWORD PTR [rax]
+	lea	rdx, .LC2[rip]
+	mov	rsi, rdx
+	mov	rdi, rax
+	call	strcmp@PLT                                       # Аргументы char* argv[1], char* .LC2 передаются через регистры rdi, rsi
+	test	eax, eax                                         # возвращаемое значения в eax
+	jne	.L9
+	mov	rax, QWORD PTR -64[rbp]                              # QWORD PTR -64[rbp] - это char *argv[]
+	add	rax, 16                                              # argv[2]
 	mov	rax, QWORD PTR [rax]
 	lea	rdx, .LC3[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	strcmp@PLT                             # В функцию strcmp передается char* argv[1] через rdi и char* строка .LC3 через rsi
-	test	eax, eax                               # Возвращаемое значение сохранено в eax
-	jne	.L13
-	mov	rax, QWORD PTR -80[rbp]                    # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 32
-	mov	rax, QWORD PTR [rax]
-	lea	rdx, .LC4[rip]
-	mov	rsi, rdx
-	mov	rdi, rax
-	call	fopen@PLT                              
-	mov	QWORD PTR -24[rbp], rax                    # QWORD PTR -24[rbp] - это FILE *ifst
-	cmp	QWORD PTR -24[rbp], 0
-	jne	.L14
-	lea	rax, .LC5[rip]
-	mov	rdi, rax
-	call	puts@PLT                               # в puts передается строка char* .LC5 через rdi, возвращаемое значение сохраняется в eax, но не используется
-	mov	eax, 3
-	jmp	.L12
-.L14:
-	mov	rax, QWORD PTR -24[rbp]                    # QWORD PTR -24[rbp] - это FILE *ifst
-	mov	edx, 10000000
-	lea	rcx, Text[rip]
-	mov	rsi, rcx
-	mov	rdi, rax
-	call	ReadFromFile@PLT                       # в ReadFromFile передаются параметры FILE* ifst, char A[], 10000000 через rdi, rsi, edx соответственно
-	                                               # возвращаемое значение сохраняется в eax, из eax в text_size
-	mov	DWORD PTR -4[rbp], eax                     # DWORD PTR -4[rbp] - это int text_size
-	mov	rax, QWORD PTR -24[rbp]                    # QWORD PTR -24[rbp] - это FILE *ifst
-	mov	rdi, rax
-	call	fclose@PLT                             # В функцию fclose передается FILE* ifst через rdi
-	mov	rax, QWORD PTR -80[rbp]                    # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 16
-	mov	rax, QWORD PTR [rax]
-	mov	edx, 10
-	mov	esi, 0
-	mov	rdi, rax
-	call	strtol@PLT                             # В функцию strtol передаются char* argv[2] через rdi, 0 через esi и 10 через edx
-	                                               # возвращаемое значение сохраняется в eax
-	mov	DWORD PTR -8[rbp], eax                     # DWORD PTR -8[rbp] - это int sub_size
-	mov	rax, QWORD PTR -80[rbp]                    # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 24
+	call	fopen@PLT                                       # Аргументы char* argv[2], char* .LC3 передаются через регистры rdi, rsi. Возвращаемое значение в eax
+	mov	QWORD PTR -16[rbp], rax                             # QWORD PTR -16[rbp] - FILE *ifst
+	cmp	QWORD PTR -16[rbp], 0
+	jne	.L10
+	mov	rax, QWORD PTR -64[rbp]                              # QWORD PTR -64[rbp] - это char *argv[]
+	add	rax, 16                                              # argv[2]
 	mov	rax, QWORD PTR [rax]
 	mov	rsi, rax
-	lea	rax, Sub[rip]
+	lea	rax, .LC4[rip]
 	mov	rdi, rax
-	call	strcpy@PLT                             # В функцию strcpy передаются char Sub[], char* argv[3] через rdi, rsi соответственно
-	                                               # возвращаемое значение в rax, но не используется
-	mov	rax, QWORD PTR -80[rbp]                    # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 24
-	mov	rdx, QWORD PTR [rax]
-	mov	eax, DWORD PTR -8[rbp]                     # DWORD PTR -8[rbp] - это int sub_size
+	mov	eax, 0
+	call	printf@PLT                                      # Аргумент char* .LC4 передается через регистр rdi
+	mov	eax, 3                                              # Возвращаемое значение в eax
+	jmp	.L8
+.L10:
+	mov	rax, QWORD PTR -16[rbp]                             # QWORD PTR -16[rbp] - FILE *ifst
+	lea	rdx, Y[rip]
+	lea	rcx, X[rip]
+	mov	rsi, rcx
+	mov	rdi, rax
+	call	ReadFromFile@PLT                                # Аргументы FILE *ifst, double X[], double Y[] передаются через регистры rdi, rsi, rdx
+	test	eax, eax                                        # Возвращаемое значение в eax
+	je	.L11
+	mov	eax, 0
+	call	errMessage2                                     # Не передаются аргументы
+	mov	eax, 2                                              # нет возвращаемого значения
+	jmp	.L8
+.L11:
+	mov	rax, QWORD PTR -16[rbp]                             # QWORD PTR -16[rbp] - FILE *ifst
+	mov	rdi, rax
+	call	fclose@PLT                                      # Аргумент FILE *ifst передается через регистр rdi
+	jmp	.L12                                                # Возвращаемое значение в eax, но оно не используется
+.L9:
+	mov	rax, QWORD PTR -64[rbp]                              # QWORD PTR -64[rbp] - это char *argv[]
+	add	rax, 8                                               # argv[1]
+	mov	rax, QWORD PTR [rax]
+	lea	rdx, .LC5[rip]
 	mov	rsi, rdx
-	mov	edi, eax
-	call	check_sub                              # В функцию check_sub передаются int sub_size, char* argv[3] через edi, rsi соответственно
-	test	eax, eax                               # возвращаемое значение в eax
-	je	.L15
+	mov	rdi, rax
+	call	strcmp@PLT                                      # Аргументы char* argv[1], char* .LC5 передаются через регистры rdi, rsi
+	test	eax, eax                                        # Возвращаемое значение в eax
+	jne	.L13
+	mov	rax, QWORD PTR stdin[rip]
+	lea	rdx, Y[rip]
+	lea	rcx, X[rip]
+	mov	rsi, rcx
+	mov	rdi, rax
+	call	ReadFromFile@PLT                                # Аргументы stdin, double X[], double Y[] передаются через регистры rdi, rsi, rdx
+    test	eax, eax                                        # Возвращаемое значение в eax
+	je	.L12
 	mov	eax, 0
-	call	errMessage2                            # В функцию errMessage2 не передаются аргументы + она ничего не возвращает
-	mov	eax, 2
-	jmp	.L12
-.L15:
-	cmp	DWORD PTR -8[rbp], 10000000                # DWORD PTR -8[rbp] - это int sub_size
-	jg	.L16
-	cmp	DWORD PTR -8[rbp], 0                       # DWORD PTR -8[rbp] - это int sub_size
-	jg	.L17
-.L16:
-	mov	eax, 0
-	call	errMessage3                            # В функцию errMessage3 не передаются аргументы + она ничего не возвращает
-	mov	eax, 3
-	jmp	.L12
+	call	errMessage2                                     # Не передаются аргументы
+    mov	eax, 2                                              # нет возвращаемого значения
+	jmp	.L8
 .L13:
-	mov	rax, QWORD PTR -80[rbp]                     # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 8
+	mov	rax, QWORD PTR -64[rbp]                             # QWORD PTR -64[rbp] - это char *argv[]
+	add	rax, 8                                              # argv[1]
 	mov	rax, QWORD PTR [rax]
 	lea	rdx, .LC6[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	strcmp@PLT                             # В функцию strcmp передается char* argv[1] через rdi и char* строка .LC6 через rsi
-	test	eax, eax                               # Возвращаемое значение сохранено в eax
-	jne	.L18
-	mov	rax, QWORD PTR -80[rbp]                     # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 16
-	mov	rax, QWORD PTR [rax]
-	mov	edx, 10
-	mov	esi, 0
-	mov	rdi, rax
-	call	strtol@PLT                              # В функцию strtol передаются char* argv[2] через rdi, 0 через esi и 10 через edx
-                                                    # возвращаемое значение сохраняется в eax
-	mov	DWORD PTR -8[rbp], eax                      # DWORD PTR -8[rbp] - это int sub_size
-	mov	rax, QWORD PTR -80[rbp]                     # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 24
-	mov	rax, QWORD PTR [rax]
-	mov	rsi, rax
-	lea	rax, Sub[rip]
-	mov	rdi, rax
-	call	strcpy@PLT                              # В функцию strcpy передаются char Sub[], char* argv[3] через rdi, rsi соответственно
-                                                    # возвращаемое значение в rax, но не используется
-	mov	rax, QWORD PTR -80[rbp]                     # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 24
-	mov	rdx, QWORD PTR [rax]
-	mov	eax, DWORD PTR -8[rbp]                      # DWORD PTR -8[rbp] - это int sub_size
-	mov	rsi, rdx
-	mov	edi, eax
-	call	check_sub                               # В функцию check_sub передаются int sub_size, char* argv[3] через edi, rsi соответственно
-	test	eax, eax                                # возвращаемое значение в eax
-	je	.L19
-	mov	eax, 0
-	call	errMessage2                             # В функцию errMessage2 не передаются аргументы + она ничего не возвращает
-	mov	eax, 2
-	jmp	.L12
-.L19:
-	cmp	DWORD PTR -8[rbp], 10000000                # DWORD PTR -8[rbp] - это int sub_size
-	jg	.L20
-	cmp	DWORD PTR -8[rbp], 0                       # DWORD PTR -8[rbp] - это int sub_size
-	jg	.L21
-.L20:
-	mov	eax, 0
-	call	errMessage3                            # В функцию errMessage3 не передаются аргументы + она ничего не возвращает
-	mov	eax, 3
-	jmp	.L12
-.L21:
+	call	strcmp@PLT                                      # Аргументы char* argv[1], char* .LC6 передаются через регистры rdi, rsi
+    test	eax, eax                                        # Возвращаемое значение в eax
+	jne	.L14
 	mov	edi, 0
-	call	time@PLT                               # В функцию time передается 0 через edi
-	mov	edi, eax                                   # Возвращаемое значение в eax
-	call	srand@PLT                              # В функцию scrand передается значение time(0) через edi
-	                                               # scrand ничего не возвращает
-	mov	DWORD PTR -4[rbp], 10000000                 # DWORD PTR -4[rbp] - это int text_size
-	mov	rax, QWORD PTR -80[rbp]                     # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 32
-	mov	rax, QWORD PTR [rax]
-	lea	rdx, .LC7[rip]
-	mov	rsi, rdx
+	call	time@PLT                                        # Аргумент 0 передается через регистр edi
+	mov	edi, eax                                            # Возвращаемое значение в eax
+	call	srand@PLT                                       # Аргумент из time передается через регистр edi
+	mov	eax, 0                                              # Возвращаемого значения нет
+	call	GenerateRandomCoordinates                       # Не принимает аргументов
+	jmp	.L12                                                # Возвращаемого значения нет
+.L14:
+	mov	eax, 0
+	call	errMessage1                                     # Не принимает аргументов
+	mov	eax, 1                                              # Возвращаемого значения нет
+	jmp	.L8
+.L12:
+	call	clock@PLT                                       # Не принимает аргументов. Возвращаемое значение в rax
+	mov	QWORD PTR -24[rbp], rax                             # QWORD PTR -24[rbp] - clock_t start
+	mov	DWORD PTR -8[rbp], 0                                # DWORD PTR -8[rbp] - int i
+	jmp	.L15
+.L16:
+	lea	rax, Y[rip]
+	mov	rsi, rax
+	lea	rax, X[rip]
 	mov	rdi, rax
-	call	strcmp@PLT                              # В функцию strcmp передаются 2 аргумента через rdi, rsi: char* argv[4], char* .LC7
-                                                    # Результат функции strcmp в eax
-	test	eax, eax
-	jne	.L22
-	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int text_size
-	mov	edi, eax
-	call	GenerateRandomString                    # В функцию GenerateRandomString передается аргумент text_size(DWORD PTR -4[rbp]) через edi
-	                                                # функция ничего не возвращает
-	jmp	.L17
-.L22:
-	mov	rax, QWORD PTR -80[rbp]                     # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 32
+	call	CheckCircle@PLT                                 # Аргументы double X[], double Y[] передаются через регистры rdi, rsi. Возвращаемое значение в eax
+	mov	DWORD PTR -4[rbp], eax                              # DWORD PTR -4[rbp] - int result
+	add	DWORD PTR -8[rbp], 1                                # DWORD PTR -8[rbp] - int i
+.L15:
+	cmp	DWORD PTR -8[rbp], 59999999
+	jle	.L16
+	mov	edi, 10
+	call	putchar@PLT                                     # Аргумент 10 передается через регистры edi. Возвращаемое значение в eax
+	call	clock@PLT                                       # Не принимает аргументов. Возвращаемое значение в rax
+	mov	QWORD PTR -32[rbp], rax                             # QWORD PTR -32[rbp] - clock_t end
+	mov	rax, QWORD PTR -32[rbp]
+	sub	rax, QWORD PTR -24[rbp]                             # QWORD PTR -24[rbp] - clock_t start
+	pxor	xmm0, xmm0
+	cvtsi2sd	xmm0, rax
+	movsd	xmm1, QWORD PTR .LC7[rip]
+	divsd	xmm0, xmm1
+	movsd	QWORD PTR -40[rbp], xmm0                        # QWORD PTR -40[rbp] - double calcTime
+	mov	rax, QWORD PTR stdout[rip]
+	mov	ecx, DWORD PTR -4[rbp]                              # DWORD PTR -4[rbp] - int result
+	lea	rdx, Y[rip]
+	lea	rsi, X[rip]
+	mov	rdi, rax
+	call	Output@PLT                                      # Аргументы stdout, double X[], double Y[], int result передаются через регистры rdi, rsi, rdx, ecx. Возвращаемого значения нет
+	mov	eax, DWORD PTR -52[rbp]                             # DWORD PTR -52[rbp] - это int argc
+	cdqe
+	sal	rax, 3
+	lea	rdx, -8[rax]
+	mov	rax, QWORD PTR -64[rbp]                             # QWORD PTR -64[rbp] - это char *argv[]
+	add	rax, rdx                                            # argv[argc - 1]
 	mov	rax, QWORD PTR [rax]
 	lea	rdx, .LC8[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	strcmp@PLT                              # В функцию strcmp передаются 2 аргумента через rdi, rsi: char* argv[4], char* .LC8
-                                                    # Результат функции strcmp в eax
-	test	eax, eax
-	jne	.L23
-	mov	eax, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int text_size
-	mov	esi, eax
-	lea	rax, Text[rip]
-	mov	rdi, rax
-	call	ReadFromConsole@PLT                     # В функцию ReadFromConsole передаются char Text[], int text_size через rdi, esi соответственно
-	mov	DWORD PTR -4[rbp], eax                      # DWORD PTR -4[rbp] - это int text_size
-	jmp	.L17
-.L23:
-	mov	eax, 0
-	call	errMessage1                             # В функцию errMessage1 не передаются аргументы + она ничего не возвращает
-	mov	eax, 1
-	jmp	.L12
-.L18:
-	mov	eax, 0
-	call	errMessage1                             # В функцию errMessage1 не передаются аргументы + она ничего не возвращает
-	mov	eax, 1
-	jmp	.L12
-.L17:
-	call	clock@PLT                               # В функцию clock не передаются никакие аргументы
-	                                                # Возвращаемое значение сохраняется в rax
-	mov	QWORD PTR -32[rbp], rax                     # QWORD PTR -32[rbp] - это clock_t start
-	mov	DWORD PTR -16[rbp], 0                       # DWORD PTR -16[rbp] - это int i
-	jmp	.L24
-.L25:
-	mov	edx, DWORD PTR -4[rbp]                      # DWORD PTR -4[rbp] - это int text_size
-	mov	eax, DWORD PTR -8[rbp]                      # DWORD PTR -8[rbp] - это int sub_size
-	mov	r8d, edx
-	lea	rdx, Text[rip]
-	mov	rcx, rdx
-	mov	edx, eax
-	lea	rax, Sub[rip]
-	mov	rsi, rax
-	lea	rax, Index[rip]
-	mov	rdi, rax
-	call	BuildIndexArray@PLT                     # В функцию BuildIndexArray передаются аргументы int Index[], char Sub[], int sub_size, char Text[], int text_size
-	                                                # возвращаемое значение сохраняется в eax
-	mov	DWORD PTR -12[rbp], eax                     # DWORD PTR -12[rbp] - это int index_size
-	add	DWORD PTR -16[rbp], 1
-.L24:
-	cmp	DWORD PTR -16[rbp], 99
-	jle	.L25
-	call	clock@PLT                               # В функцию clock не передаются никакие аргументы
-                     	                            # Возвращаемое значение сохраняется в rax
-	mov	QWORD PTR -40[rbp], rax                     # QWORD PTR -40[rbp] - это clock_t end
-	mov	rax, QWORD PTR -40[rbp]
-	sub	rax, QWORD PTR -32[rbp]                     # QWORD PTR -32[rbp] - это clock_t start
-	pxor	xmm0, xmm0
-	cvtsi2sd	xmm0, rax
-	movsd	xmm1, QWORD PTR .LC9[rip]
-	divsd	xmm0, xmm1
-	movsd	QWORD PTR -48[rbp], xmm0                # QWORD PTR -48[rbp] - это double calcTime
-	mov	rax, QWORD PTR stdout[rip]
-	mov	edx, DWORD PTR -12[rbp]                     # DWORD PTR -12[rbp] - это int index_size
-	lea	rcx, Index[rip]
-	mov	rsi, rcx
-	mov	rdi, rax
-	call	Output@PLT                              # В функцию Output передаются stdout, int Index[], int index_size через rdi, rsi, edx
-	                                                # функция ничего не возвращает
-	mov	rax, QWORD PTR -80[rbp]                     # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 40
+	call	fopen@PLT                                       # Аргументы char* argv[argc - 1], char* .LC8 передаются через регистры rdi, rsi. Возвращаемое значение в eax
+	mov	QWORD PTR -48[rbp], rax                             # QWORD PTR -48[rbp] - FILE *ofst
+	cmp	QWORD PTR -48[rbp], 0
+	jne	.L17
+	mov	eax, DWORD PTR -52[rbp]                             # DWORD PTR -52[rbp] - это int argc
+	cdqe
+	sal	rax, 3
+	lea	rdx, -8[rax]
+	mov	rax, QWORD PTR -64[rbp]                             # QWORD PTR -64[rbp] - это char *argv[]
+	add	rax, rdx                                            # argv[argc - 1]
 	mov	rax, QWORD PTR [rax]
+	mov	rsi, rax
+	lea	rax, .LC9[rip]
+	mov	rdi, rax
+	mov	eax, 0
+	call	printf@PLT                                      # Аргумент char* .LC9 передается через регистр rdi
+	mov	eax, 1                                              # Возвращаемое значение в eax
+	jmp	.L8
+.L17:
+	mov	rax, QWORD PTR stdout[rip]
+	mov	rdx, QWORD PTR -40[rbp]                             # QWORD PTR -40[rbp] - double calcTime
+	movq	xmm0, rdx
 	lea	rdx, .LC10[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	fopen@PLT                               # В функцию fopen передаются char* argv[5], char* .LC10 через rdi и rsi соответственно 
-                                                    # Возвращаемое значение сохранено в rax
-	mov	QWORD PTR -56[rbp], rax                     # QWORD PTR -56[rbp] - это FILE *ofst1
-	cmp	QWORD PTR -56[rbp], 0
-	jne	.L26
-	mov	rax, QWORD PTR -80[rbp]                     # QWORD PTR -80[rbp] - это char *argv[]
-	add	rax, 40
-	mov	rax, QWORD PTR [rax]
-	mov	rsi, rax
-	lea	rax, .LC11[rip]
-	mov	rdi, rax
-	mov	eax, 0
-	call	printf@PLT                              # в printf передаются строка char* .LC11 через rdi и char* argv[5] через rsi, возвращаемое значение сохраняется в eax, но оно не используется
 	mov	eax, 1
-	jmp	.L12
-.L26:
-	mov	edx, DWORD PTR -12[rbp]                     # DWORD PTR -12[rbp] - это int index_size
-	mov	rax, QWORD PTR -56[rbp]                     # QWORD PTR -56[rbp] - это FILE *ofst1
-	lea	rcx, Index[rip]
-	mov	rsi, rcx
+	call	fprintf@PLT                                    # Аргументы stdout, char* .LC10, double calcTime передаются через регистр rdi, rsi, xmm0
+                                                           # Возвращаемое значение в eax
+	mov	edx, DWORD PTR -4[rbp]                             # DWORD PTR -4[rbp] - int result
+	mov	rax, QWORD PTR -48[rbp]                            # QWORD PTR -48[rbp] - FILE *ofst
+	mov	ecx, edx
+	lea	rdx, Y[rip]
+	lea	rsi, X[rip]
 	mov	rdi, rax
-	call	Output@PLT                              # В функцию Output передаются FILE* ofst1, int Index[], int index_size через rdi, rsi, edx
-                                                    # функция ничего не возвращает
-	mov	rax, QWORD PTR stdout[rip]
-	mov	rdx, QWORD PTR -48[rbp]                     # QWORD PTR -48[rbp] - это double calcTime
+	call	Output@PLT                                      # Аргументы FILE *ofst, double X[], double Y[], int result передаются через регистры rdi, rsi, rdx, ecx. Возвращаемого значения нет
+	mov	rdx, QWORD PTR -40[rbp]                             # QWORD PTR -40[rbp] - double calcTime
+	mov	rax, QWORD PTR -48[rbp]                             # QWORD PTR -48[rbp] - FILE *ofst
 	movq	xmm0, rdx
-	lea	rdx, .LC12[rip]
+	lea	rdx, .LC10[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
 	mov	eax, 1
-	call	fprintf@PLT                             # в fprintf передаются stdout, char* .LC12, double calcTime через rdi, rsi и xmm0, возвращаемое значение сохраняется в eax, но оно не используется
-	mov	rdx, QWORD PTR -48[rbp]                     # QWORD PTR -48[rbp] - это double calcTime
-	mov	rax, QWORD PTR -56[rbp]                     # QWORD PTR -56[rbp] - это FILE *ofst1
-	movq	xmm0, rdx
-	lea	rdx, .LC13[rip]
-	mov	rsi, rdx
+	call	fprintf@PLT                                     # Аргументы FILE *ofst, char* .LC10, double calcTime передаются через регистр rdi, rsi, xmm0
+                                                            # Возвращаемое значение в eax
+	mov	rax, QWORD PTR -48[rbp]                             # QWORD PTR -48[rbp] - FILE *ofst
 	mov	rdi, rax
-	mov	eax, 1
-	call	fprintf@PLT                             # в fprintf передаются FILE* ofst1, char* .LC13, double calcTime через rdi, rsi и xmm0, возвращаемое значение сохраняется в eax, но оно не используется
-	mov	rax, QWORD PTR -56[rbp]                     # QWORD PTR -56[rbp] - это FILE *ofst1
-	mov	rdi, rax
-	call	fclose@PLT                              # В функцию fclose передается FILE* ofst1 через rdi
-	mov	eax, 0
-.L12:
+	call	fclose@PLT                                      # Аргумент FILE *ofst передается через регистр rdi
+	mov	eax, 0                                              # Возвращаемое значение в eax¬
+.L8:
 	leave
 	ret
 	.size	main, .-main
 	.section	.rodata
 	.align 8
-.LC9:
+.LC7:
 	.long	0
 	.long	1093567618
-	.ident	"GCC: (Ubuntu 11.2.0-19ubuntu1) 11.2.0"
+	.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
 	.align 8
