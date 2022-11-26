@@ -157,13 +157,13 @@
     jle	.L25
      ```
   - Получается сравниваются 2 программы по скорости: [main_w_reg.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/main_w_reg.out) и [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_gcc/main.out). Остальные написанные программы сравнивать бессмысленно так как комментарии, которые я добавлял никак не влияют на скорость выполнения программы и их результат идентичен [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_gcc/main.out)
-  - Результаты запуска на время с параметрами **-n 1 "a" -r ../../test/test_random.out**: 
+  - Результаты запуска на время с параметрами **-r -r test/test_random.out**: 
  
  |      | main_w_reg.out (оптимизация регистрами) | main.out (без какой либо оптимизации) |
  |:-----:|:---------------------------------------:|:---------------------------------------------:|
  | Команда | Mark-6-7/main_w_reg.out -r test/test_random.out | Assembly_by_gcc/main.out -r test/test_random.out |
  | Время | Calculation time = 2.20377 | Calculation time = 2.41889 |
- | Пруфы |![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/register_opt_random_test.png)|![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/no_opt_random_test.png)|
+ | Пруфы |![]|![]|
  
  - Вывод: у нас удалось улучшить скорость работы алогоритма за счет использования регистров вместо памяти на стеке
  ## На оценку 9
