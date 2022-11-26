@@ -21,7 +21,7 @@ Y:
 	.text
 	.globl	errMessage1
 	.type	errMessage1, @function
-errMessage1:
+errMessage1:                                     # У функции нет формальных параметров
 	endbr64
 	push	rbp
 	mov	rbp, rsp
@@ -32,7 +32,7 @@ errMessage1:
 	nop                                          # возвращаемое значение в eax, но оно не используется
 	pop	rbp
 	ret
-	.size	errMessage1, .-errMessage1
+	.size	errMessage1, .-errMessage1           # Функция ничего не возвращает
 	.section	.rodata
 	.align 8
 .LC1:
@@ -40,7 +40,7 @@ errMessage1:
 	.text
 	.globl	errMessage2
 	.type	errMessage2, @function
-errMessage2:
+errMessage2:                                     # У функции нет формальных параметров
 	endbr64
 	push	rbp
 	mov	rbp, rsp
@@ -51,10 +51,10 @@ errMessage2:
 	nop                                          # возвращаемое значение в eax, но оно не используется
 	pop	rbp
 	ret
-	.size	errMessage2, .-errMessage2
+	.size	errMessage2, .-errMessage2           # Функция ничего не возвращает
 	.globl	GenerateRandomCoordinates
 	.type	GenerateRandomCoordinates, @function
-GenerateRandomCoordinates:
+GenerateRandomCoordinates:                              # У функции нет формальных параметров
 	endbr64
 	push	rbp
 	mov	rbp, rsp
@@ -106,7 +106,7 @@ GenerateRandomCoordinates:
 	nop
 	leave
 	ret
-	.size	GenerateRandomCoordinates, .-GenerateRandomCoordinates
+	.size	GenerateRandomCoordinates, .-GenerateRandomCoordinates      # Функция ничего не возвращает
 	.section	.rodata
 .LC2:
 	.string	"-f"
@@ -131,7 +131,7 @@ main:
 	endbr64
 	push	rbp
 	mov	rbp, rsp
-	sub	rsp, 64
+	sub	rsp, 64                                              # Формальные параметры: int argc, char *argv[]
 	mov	DWORD PTR -52[rbp], edi                              # DWORD PTR -52[rbp] - это int argc
 	mov	QWORD PTR -64[rbp], rsi                              # QWORD PTR -64[rbp] - это char *argv[]
 	cmp	DWORD PTR -52[rbp], 3                                # DWORD PTR -52[rbp] - это int argc
@@ -329,7 +329,7 @@ main:
 .L8:
 	leave
 	ret
-	.size	main, .-main
+	.size	main, .-main                                    # Возвращает код возврата
 	.section	.rodata
 	.align 8
 .LC7:
@@ -341,7 +341,7 @@ main:
 	.align 8
 	.long	1f - 0f
 	.long	4f - 1f
-	.long	5
+	.long
 0:
 	.string	"GNU"
 1:
