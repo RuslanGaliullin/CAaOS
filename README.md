@@ -25,22 +25,23 @@
 - Полученный описанным выше способом исполняемый файл сравнивается с [main.out](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/main.out) (компиляция из начального С файла) поочередным запуском на тестах:
 
 
-  ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/tests_for_mark_4.png)
+  ![](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/output_test_mark_4.png)
 - Тесты находятся в [test](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/test)
 - Ожидаемые выводы (массива В) для каждого теста:
 
 
-|   Файл теста  | Массив индексов    |
+|   Файл теста  |  Координаты  |
 | :-------------: | :------------- |
-| test01.in  | 2 11 30 38 52 58 63   |
-| test02.in  | |
-| test03.in  | 0 2 4 6 8 10 12 |
-| test04.in  | |
+| test01.in  | -1 0 0 1 1 0 0 -1   |
+| test02.in  | 0 0 0 0 0 0 0 0 |
+| test03.in  | -4.3 0 0 4.3 4.3 0 0 -4.31 |
+| test04.in  | 1 2 5 6 100 2 1 2 |
+| test05.in  ||
 - Как можно заметить по скриншоту и ожидаемому выводу, обе программы дают одинаковый, а главное правильный результат
 ## На оценку 5
 ### Шаг № 1. Функции
-  - Используемые функции с передачей параметров: BuildIndexArray, Output, ReadFromFile, ReadFromConsole, check_sub, GenerateRandomString, main, strncmp, fprintf, fputc, fgetc, puts, printf, strlen, strcmp, fopen, fclose, strtol, strcpy, time, srand 
-  - Локальные переменные: int text_size, sub_size, index_size, int i, FILE* ifst, clock_t start, clock_t end, double calcTime, FILE* ofst1, int argc, char* argv\[\] (не писал переменные, создаваемые при передачи параметров по значению)
+  - Используемые функции с передачей параметров: Output, CheckCircle, CheckSimilarPoints, FindCenter, ReadFromFile, main, fprintf, printf, strcmp, fopen, fclose, fscanf, time, srand, putchar
+  - Локальные переменные: idouble cx01, double cy01, double dx01, double dy01, double mx01, double my01, double cx12, double cy12, double dx12, double dy12, double mx12, double my12, double center_x, double center_y, double distance_1, double distance_2, int i, double proportion, double c1, double c2, int result, FILE *ifst, clock_t start, clock_t end, FILE* ofst (не писал переменные, создаваемые при передачи параметров по значению)
   - Файлы с комментарием вызовов функций:
     - [main_w_func_comm.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-5/main_w_func_comm.s)
     - [addition_w_func_comm.s](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-5/addition_w_func_comm.s)
