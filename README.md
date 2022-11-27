@@ -163,7 +163,7 @@
 ### Шаг № 2. Сравнение размера исполняемых файлов и кода на ассемблере
  [Скрины с запусками](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/data/size_opt)
  
- [Скрин с размерами файлов](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/size_opt/size_opt_size_files.png)
+ ![Скрин с размерами файлов](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/size_opt/size_opt_size_files.png)
  | № | Параметры | Время работы | Размер исполняемого файла | Количество строк (main.s + addition.s) |
  |:--:|:--:|:---:|:--:|:--:|
  | 1 |без параметров|Calculation time = 2.53106|20Кб|383 + 539|
