@@ -17,7 +17,7 @@ Y:
 	.align 8
 .LC0:
 	.string	"incorrect command line!\n  Waited:\n     command -c outfile     in console: x0 y0 x1 y1 x2 y2 x3 y4  Or:\n     command -r outfile  Or:\n     command -f infile outfile"
-	.text
+	.section	.text.errMessage1,"ax",@progbits
 	.globl	errMessage1
 	.type	errMessage1, @function
 errMessage1:
@@ -35,7 +35,7 @@ errMessage1:
 	.align 8
 .LC1:
 	.string	"incorrect data in the input file or in console!\n  Waited:\n     x0 y0 x1 y1 x2 y2 x3 y4"
-	.text
+	.section	.text.errMessage2,"ax",@progbits
 	.globl	errMessage2
 	.type	errMessage2, @function
 errMessage2:
@@ -49,6 +49,7 @@ errMessage2:
 	popq	%rbp
 	ret
 	.size	errMessage2, .-errMessage2
+	.section	.text.GenerateRandomCoordinates,"ax",@progbits
 	.globl	GenerateRandomCoordinates
 	.type	GenerateRandomCoordinates, @function
 GenerateRandomCoordinates:
@@ -121,7 +122,7 @@ GenerateRandomCoordinates:
 	.string	"Cannot open %s to write\n"
 .LC10:
 	.string	"\nCalculation time = %g\n"
-	.text
+	.section	.text.main,"ax",@progbits
 	.globl	main
 	.type	main, @function
 main:
@@ -140,7 +141,7 @@ main:
 	movl	$1, %eax
 	jmp	.L8
 .L7:
-	movl	$0, -4(%rbp)
+	movl	$0, -48(%rbp)
 	movq	-64(%rbp), %rax
 	addq	$8, %rax
 	movq	(%rax), %rax
@@ -157,8 +158,8 @@ main:
 	movq	%rdx, %rsi
 	movq	%rax, %rdi
 	call	fopen@PLT
-	movq	%rax, -16(%rbp)
-	cmpq	$0, -16(%rbp)
+	movq	%rax, -40(%rbp)
+	cmpq	$0, -40(%rbp)
 	jne	.L10
 	movq	-64(%rbp), %rax
 	addq	$16, %rax
@@ -171,7 +172,7 @@ main:
 	movl	$3, %eax
 	jmp	.L8
 .L10:
-	movq	-16(%rbp), %rax
+	movq	-40(%rbp), %rax
 	leaq	Y(%rip), %rdx
 	leaq	X(%rip), %rcx
 	movq	%rcx, %rsi
@@ -184,7 +185,7 @@ main:
 	movl	$2, %eax
 	jmp	.L8
 .L11:
-	movq	-16(%rbp), %rax
+	movq	-40(%rbp), %rax
 	movq	%rax, %rdi
 	call	fclose@PLT
 	jmp	.L12
@@ -234,8 +235,8 @@ main:
 	jmp	.L8
 .L12:
 	call	clock@PLT
-	movq	%rax, -24(%rbp)
-	movl	$0, -8(%rbp)
+	movq	%rax, -32(%rbp)
+	movl	$0, -44(%rbp)
 	jmp	.L15
 .L16:
 	leaq	Y(%rip), %rax
@@ -243,24 +244,24 @@ main:
 	leaq	X(%rip), %rax
 	movq	%rax, %rdi
 	call	CheckCircle@PLT
-	movl	%eax, -4(%rbp)
-	addl	$1, -8(%rbp)
+	movl	%eax, -48(%rbp)
+	addl	$1, -44(%rbp)
 .L15:
-	cmpl	$59999999, -8(%rbp)
+	cmpl	$59999999, -44(%rbp)
 	jle	.L16
 	movl	$10, %edi
 	call	putchar@PLT
 	call	clock@PLT
-	movq	%rax, -32(%rbp)
-	movq	-32(%rbp), %rax
-	subq	-24(%rbp), %rax
+	movq	%rax, -24(%rbp)
+	movq	-24(%rbp), %rax
+	subq	-32(%rbp), %rax
 	pxor	%xmm0, %xmm0
 	cvtsi2sdq	%rax, %xmm0
 	movsd	.LC7(%rip), %xmm1
 	divsd	%xmm1, %xmm0
-	movsd	%xmm0, -40(%rbp)
+	movsd	%xmm0, -16(%rbp)
 	movq	stdout(%rip), %rax
-	movl	-4(%rbp), %edx
+	movl	-48(%rbp), %edx
 	movl	%edx, %ecx
 	leaq	Y(%rip), %rdx
 	leaq	X(%rip), %rsi
@@ -277,8 +278,8 @@ main:
 	movq	%rdx, %rsi
 	movq	%rax, %rdi
 	call	fopen@PLT
-	movq	%rax, -48(%rbp)
-	cmpq	$0, -48(%rbp)
+	movq	%rax, -8(%rbp)
+	cmpq	$0, -8(%rbp)
 	jne	.L17
 	movl	-52(%rbp), %eax
 	cltq
@@ -296,29 +297,29 @@ main:
 	jmp	.L8
 .L17:
 	movq	stdout(%rip), %rax
-	movq	-40(%rbp), %rdx
+	movq	-16(%rbp), %rdx
 	movq	%rdx, %xmm0
 	leaq	.LC10(%rip), %rdx
 	movq	%rdx, %rsi
 	movq	%rax, %rdi
 	movl	$1, %eax
 	call	fprintf@PLT
-	movl	-4(%rbp), %edx
-	movq	-48(%rbp), %rax
+	movl	-48(%rbp), %edx
+	movq	-8(%rbp), %rax
 	movl	%edx, %ecx
 	leaq	Y(%rip), %rdx
 	leaq	X(%rip), %rsi
 	movq	%rax, %rdi
 	call	Output@PLT
-	movq	-40(%rbp), %rdx
-	movq	-48(%rbp), %rax
+	movq	-16(%rbp), %rdx
+	movq	-8(%rbp), %rax
 	movq	%rdx, %xmm0
 	leaq	.LC10(%rip), %rdx
 	movq	%rdx, %rsi
 	movq	%rax, %rdi
 	movl	$1, %eax
 	call	fprintf@PLT
-	movq	-48(%rbp), %rax
+	movq	-8(%rbp), %rax
 	movq	%rax, %rdi
 	call	fclose@PLT
 	movl	$0, %eax

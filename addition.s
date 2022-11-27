@@ -1,100 +1,104 @@
 	.file	"addition.c"
 	.text
+	.section	.text.CheckCircle,"ax",@progbits
 	.globl	CheckCircle
 	.type	CheckCircle, @function
 CheckCircle:
 	endbr64
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$144, %rsp
-	movq	%rdi, -136(%rbp)
-	movq	%rsi, -144(%rbp)
-	movq	-136(%rbp), %rax
+	subq	$160, %rsp
+	movq	%rdi, -152(%rbp)
+	movq	%rsi, -160(%rbp)
+	movq	%fs:40, %rax
+	movq	%rax, -8(%rbp)
+	xorl	%eax, %eax
+	movq	-152(%rbp), %rax
 	addq	$8, %rax
 	movsd	(%rax), %xmm0
-	movq	-136(%rbp), %rax
+	movq	-152(%rbp), %rax
 	movsd	(%rax), %xmm1
 	subsd	%xmm1, %xmm0
-	movsd	%xmm0, -8(%rbp)
-	movq	-144(%rbp), %rax
+	movsd	%xmm0, -120(%rbp)
+	movq	-160(%rbp), %rax
 	addq	$8, %rax
 	movsd	(%rax), %xmm0
-	movq	-144(%rbp), %rax
+	movq	-160(%rbp), %rax
 	movsd	(%rax), %xmm1
 	subsd	%xmm1, %xmm0
-	movsd	%xmm0, -16(%rbp)
-	movsd	-16(%rbp), %xmm0
-	movsd	%xmm0, -24(%rbp)
-	movsd	-8(%rbp), %xmm0
+	movsd	%xmm0, -112(%rbp)
+	movsd	-112(%rbp), %xmm0
+	movsd	%xmm0, -104(%rbp)
+	movsd	-120(%rbp), %xmm0
 	movq	.LC0(%rip), %xmm1
 	xorpd	%xmm1, %xmm0
-	movsd	%xmm0, -32(%rbp)
-	movq	-136(%rbp), %rax
+	movsd	%xmm0, -96(%rbp)
+	movq	-152(%rbp), %rax
 	addq	$8, %rax
 	movsd	(%rax), %xmm1
-	movq	-136(%rbp), %rax
-	movsd	(%rax), %xmm0
-	addsd	%xmm1, %xmm0
-	movsd	.LC1(%rip), %xmm1
-	divsd	%xmm1, %xmm0
-	movsd	%xmm0, -40(%rbp)
-	movq	-144(%rbp), %rax
-	addq	$8, %rax
-	movsd	(%rax), %xmm1
-	movq	-144(%rbp), %rax
-	movsd	(%rax), %xmm0
-	addsd	%xmm1, %xmm0
-	movsd	.LC1(%rip), %xmm1
-	divsd	%xmm1, %xmm0
-	movsd	%xmm0, -48(%rbp)
-	movq	-136(%rbp), %rax
-	addq	$16, %rax
-	movsd	(%rax), %xmm0
-	movq	-136(%rbp), %rax
-	addq	$8, %rax
-	movsd	(%rax), %xmm1
-	subsd	%xmm1, %xmm0
-	movsd	%xmm0, -56(%rbp)
-	movq	-144(%rbp), %rax
-	addq	$16, %rax
-	movsd	(%rax), %xmm0
-	movq	-144(%rbp), %rax
-	addq	$8, %rax
-	movsd	(%rax), %xmm1
-	subsd	%xmm1, %xmm0
-	movsd	%xmm0, -64(%rbp)
-	movsd	-64(%rbp), %xmm0
-	movsd	%xmm0, -72(%rbp)
-	movsd	-56(%rbp), %xmm0
-	movq	.LC0(%rip), %xmm1
-	xorpd	%xmm1, %xmm0
-	movsd	%xmm0, -80(%rbp)
-	movq	-136(%rbp), %rax
-	addq	$16, %rax
-	movsd	(%rax), %xmm1
-	movq	-136(%rbp), %rax
-	addq	$8, %rax
+	movq	-152(%rbp), %rax
 	movsd	(%rax), %xmm0
 	addsd	%xmm1, %xmm0
 	movsd	.LC1(%rip), %xmm1
 	divsd	%xmm1, %xmm0
 	movsd	%xmm0, -88(%rbp)
-	movq	-144(%rbp), %rax
+	movq	-160(%rbp), %rax
+	addq	$8, %rax
+	movsd	(%rax), %xmm1
+	movq	-160(%rbp), %rax
+	movsd	(%rax), %xmm0
+	addsd	%xmm1, %xmm0
+	movsd	.LC1(%rip), %xmm1
+	divsd	%xmm1, %xmm0
+	movsd	%xmm0, -80(%rbp)
+	movq	-152(%rbp), %rax
+	addq	$16, %rax
+	movsd	(%rax), %xmm0
+	movq	-152(%rbp), %rax
+	addq	$8, %rax
+	movsd	(%rax), %xmm1
+	subsd	%xmm1, %xmm0
+	movsd	%xmm0, -72(%rbp)
+	movq	-160(%rbp), %rax
+	addq	$16, %rax
+	movsd	(%rax), %xmm0
+	movq	-160(%rbp), %rax
+	addq	$8, %rax
+	movsd	(%rax), %xmm1
+	subsd	%xmm1, %xmm0
+	movsd	%xmm0, -64(%rbp)
+	movsd	-64(%rbp), %xmm0
+	movsd	%xmm0, -56(%rbp)
+	movsd	-72(%rbp), %xmm0
+	movq	.LC0(%rip), %xmm1
+	xorpd	%xmm1, %xmm0
+	movsd	%xmm0, -48(%rbp)
+	movq	-152(%rbp), %rax
 	addq	$16, %rax
 	movsd	(%rax), %xmm1
-	movq	-144(%rbp), %rax
+	movq	-152(%rbp), %rax
 	addq	$8, %rax
 	movsd	(%rax), %xmm0
 	addsd	%xmm1, %xmm0
 	movsd	.LC1(%rip), %xmm1
 	divsd	%xmm1, %xmm0
-	movsd	%xmm0, -96(%rbp)
+	movsd	%xmm0, -40(%rbp)
+	movq	-160(%rbp), %rax
+	addq	$16, %rax
+	movsd	(%rax), %xmm1
+	movq	-160(%rbp), %rax
+	addq	$8, %rax
+	movsd	(%rax), %xmm0
+	addsd	%xmm1, %xmm0
+	movsd	.LC1(%rip), %xmm1
+	divsd	%xmm1, %xmm0
+	movsd	%xmm0, -32(%rbp)
 	pxor	%xmm0, %xmm0
-	movsd	%xmm0, -120(%rbp)
+	movsd	%xmm0, -136(%rbp)
 	pxor	%xmm0, %xmm0
 	movsd	%xmm0, -128(%rbp)
-	movq	-144(%rbp), %rdx
-	movq	-136(%rbp), %rax
+	movq	-160(%rbp), %rdx
+	movq	-152(%rbp), %rax
 	movq	%rdx, %rsi
 	movq	%rax, %rdi
 	call	CheckSimilarPoints
@@ -103,16 +107,16 @@ CheckCircle:
 	movl	$1, %eax
 	jmp	.L9
 .L2:
-	movsd	-80(%rbp), %xmm6
-	movsd	-72(%rbp), %xmm5
-	movsd	-96(%rbp), %xmm4
-	movsd	-88(%rbp), %xmm3
-	movsd	-32(%rbp), %xmm2
-	movsd	-24(%rbp), %xmm1
-	movsd	-48(%rbp), %xmm0
-	movq	-40(%rbp), %rcx
+	movsd	-48(%rbp), %xmm6
+	movsd	-56(%rbp), %xmm5
+	movsd	-32(%rbp), %xmm4
+	movsd	-40(%rbp), %xmm3
+	movsd	-96(%rbp), %xmm2
+	movsd	-104(%rbp), %xmm1
+	movsd	-80(%rbp), %xmm0
+	movq	-88(%rbp), %rcx
 	leaq	-128(%rbp), %rdx
-	leaq	-120(%rbp), %rax
+	leaq	-136(%rbp), %rax
 	movapd	%xmm6, %xmm7
 	movapd	%xmm5, %xmm6
 	movapd	%xmm4, %xmm5
@@ -129,62 +133,62 @@ CheckCircle:
 	movl	$0, %eax
 	jmp	.L9
 .L4:
-	movsd	-120(%rbp), %xmm0
-	movq	-136(%rbp), %rax
+	movsd	-136(%rbp), %xmm0
+	movq	-152(%rbp), %rax
 	addq	$24, %rax
 	movsd	(%rax), %xmm2
 	movapd	%xmm0, %xmm1
 	subsd	%xmm2, %xmm1
-	movsd	-120(%rbp), %xmm0
-	movq	-136(%rbp), %rax
+	movsd	-136(%rbp), %xmm0
+	movq	-152(%rbp), %rax
 	addq	$24, %rax
 	movsd	(%rax), %xmm2
 	subsd	%xmm2, %xmm0
 	mulsd	%xmm0, %xmm1
 	movsd	-128(%rbp), %xmm0
-	movq	-144(%rbp), %rax
+	movq	-160(%rbp), %rax
 	addq	$24, %rax
 	movsd	(%rax), %xmm3
 	movapd	%xmm0, %xmm2
 	subsd	%xmm3, %xmm2
 	movsd	-128(%rbp), %xmm0
-	movq	-144(%rbp), %rax
+	movq	-160(%rbp), %rax
 	addq	$24, %rax
 	movsd	(%rax), %xmm3
 	subsd	%xmm3, %xmm0
 	mulsd	%xmm2, %xmm0
 	addsd	%xmm1, %xmm0
-	movsd	%xmm0, -104(%rbp)
-	movsd	-120(%rbp), %xmm0
-	movq	-136(%rbp), %rax
+	movsd	%xmm0, -24(%rbp)
+	movsd	-136(%rbp), %xmm0
+	movq	-152(%rbp), %rax
 	movsd	(%rax), %xmm2
 	movapd	%xmm0, %xmm1
 	subsd	%xmm2, %xmm1
-	movsd	-120(%rbp), %xmm0
-	movq	-136(%rbp), %rax
+	movsd	-136(%rbp), %xmm0
+	movq	-152(%rbp), %rax
 	movsd	(%rax), %xmm2
 	subsd	%xmm2, %xmm0
 	mulsd	%xmm0, %xmm1
 	movsd	-128(%rbp), %xmm0
-	movq	-144(%rbp), %rax
+	movq	-160(%rbp), %rax
 	movsd	(%rax), %xmm3
 	movapd	%xmm0, %xmm2
 	subsd	%xmm3, %xmm2
 	movsd	-128(%rbp), %xmm0
-	movq	-144(%rbp), %rax
+	movq	-160(%rbp), %rax
 	movsd	(%rax), %xmm3
 	subsd	%xmm3, %xmm0
 	mulsd	%xmm2, %xmm0
 	addsd	%xmm1, %xmm0
-	movsd	%xmm0, -112(%rbp)
-	movsd	-104(%rbp), %xmm0
+	movsd	%xmm0, -16(%rbp)
+	movsd	-24(%rbp), %xmm0
 	movapd	%xmm0, %xmm1
-	subsd	-112(%rbp), %xmm1
+	subsd	-16(%rbp), %xmm1
 	movsd	.LC3(%rip), %xmm0
 	comisd	%xmm1, %xmm0
 	jbe	.L5
-	movsd	-104(%rbp), %xmm0
-	subsd	-112(%rbp), %xmm0
+	movsd	-24(%rbp), %xmm0
+	subsd	-16(%rbp), %xmm0
 	comisd	.LC4(%rip), %xmm0
 	jbe	.L5
 	movl	$1, %eax
@@ -192,9 +196,15 @@ CheckCircle:
 .L5:
 	movl	$0, %eax
 .L9:
+	movq	-8(%rbp), %rdx
+	subq	%fs:40, %rdx
+	je	.L10
+	call	__stack_chk_fail@PLT
+.L10:
 	leave
 	ret
 	.size	CheckCircle, .-CheckCircle
+	.section	.text.CheckSimilarPoints,"ax",@progbits
 	.globl	CheckSimilarPoints
 	.type	CheckSimilarPoints, @function
 CheckSimilarPoints:
@@ -203,62 +213,63 @@ CheckSimilarPoints:
 	movq	%rsp, %rbp
 	movq	%rdi, -24(%rbp)
 	movq	%rsi, -32(%rbp)
-	movl	$0, -4(%rbp)
-	jmp	.L13
-.L20:
-	movl	-4(%rbp), %eax
-	addl	$1, %eax
-	movl	%eax, -8(%rbp)
+	movl	$0, -8(%rbp)
 	jmp	.L14
-.L19:
-	movl	-4(%rbp), %eax
+.L21:
+	movl	-8(%rbp), %eax
+	addl	$1, %eax
+	movl	%eax, -4(%rbp)
+	jmp	.L15
+.L20:
+	movl	-8(%rbp), %eax
 	cltq
 	leaq	0(,%rax,8), %rdx
 	movq	-24(%rbp), %rax
 	addq	%rdx, %rax
 	movsd	(%rax), %xmm0
-	movl	-8(%rbp), %eax
+	movl	-4(%rbp), %eax
 	cltq
 	leaq	0(,%rax,8), %rdx
 	movq	-24(%rbp), %rax
 	addq	%rdx, %rax
 	movsd	(%rax), %xmm1
 	ucomisd	%xmm1, %xmm0
-	jp	.L15
+	jp	.L16
 	ucomisd	%xmm1, %xmm0
-	jne	.L15
-	movl	-4(%rbp), %eax
+	jne	.L16
+	movl	-8(%rbp), %eax
 	cltq
 	leaq	0(,%rax,8), %rdx
 	movq	-32(%rbp), %rax
 	addq	%rdx, %rax
 	movsd	(%rax), %xmm0
-	movl	-8(%rbp), %eax
+	movl	-4(%rbp), %eax
 	cltq
 	leaq	0(,%rax,8), %rdx
 	movq	-32(%rbp), %rax
 	addq	%rdx, %rax
 	movsd	(%rax), %xmm1
 	ucomisd	%xmm1, %xmm0
-	jp	.L15
+	jp	.L16
 	ucomisd	%xmm1, %xmm0
-	jne	.L15
+	jne	.L16
 	movl	$1, %eax
-	jmp	.L18
+	jmp	.L19
+.L16:
+	addl	$1, -4(%rbp)
 .L15:
+	cmpl	$2, -4(%rbp)
+	jle	.L20
 	addl	$1, -8(%rbp)
 .L14:
 	cmpl	$2, -8(%rbp)
-	jle	.L19
-	addl	$1, -4(%rbp)
-.L13:
-	cmpl	$2, -4(%rbp)
-	jle	.L20
+	jle	.L21
 	movl	$0, %eax
-.L18:
+.L19:
 	popq	%rbp
 	ret
 	.size	CheckSimilarPoints, .-CheckSimilarPoints
+	.section	.text.FindCenter,"ax",@progbits
 	.globl	FindCenter
 	.type	FindCenter, @function
 FindCenter:
@@ -280,16 +291,16 @@ FindCenter:
 	movsd	-80(%rbp), %xmm1
 	mulsd	-104(%rbp), %xmm1
 	subsd	%xmm1, %xmm0
-	movsd	%xmm0, -8(%rbp)
-	movsd	-8(%rbp), %xmm0
+	movsd	%xmm0, -24(%rbp)
+	movsd	-24(%rbp), %xmm0
 	comisd	.LC4(%rip), %xmm0
-	jbe	.L24
+	jbe	.L25
 	movsd	.LC3(%rip), %xmm0
-	comisd	-8(%rbp), %xmm0
-	jbe	.L24
+	comisd	-24(%rbp), %xmm0
+	jbe	.L25
 	movl	$0, %eax
-	jmp	.L27
-.L24:
+	jmp	.L28
+.L25:
 	movsd	-80(%rbp), %xmm0
 	mulsd	-56(%rbp), %xmm0
 	movsd	-72(%rbp), %xmm1
@@ -301,25 +312,25 @@ FindCenter:
 	movsd	-104(%rbp), %xmm1
 	mulsd	-96(%rbp), %xmm1
 	subsd	%xmm1, %xmm0
-	movsd	%xmm0, -24(%rbp)
-	movsd	-24(%rbp), %xmm0
+	movsd	%xmm0, -8(%rbp)
+	movsd	-8(%rbp), %xmm0
 	mulsd	-72(%rbp), %xmm0
 	movsd	-16(%rbp), %xmm1
 	mulsd	-104(%rbp), %xmm1
 	subsd	%xmm1, %xmm0
-	divsd	-8(%rbp), %xmm0
+	divsd	-24(%rbp), %xmm0
 	movq	-40(%rbp), %rax
 	movsd	%xmm0, (%rax)
-	movsd	-24(%rbp), %xmm0
+	movsd	-8(%rbp), %xmm0
 	mulsd	-80(%rbp), %xmm0
 	movsd	-16(%rbp), %xmm1
 	mulsd	-112(%rbp), %xmm1
 	subsd	%xmm1, %xmm0
-	divsd	-8(%rbp), %xmm0
+	divsd	-24(%rbp), %xmm0
 	movq	-48(%rbp), %rax
 	movsd	%xmm0, (%rax)
 	movl	$1, %eax
-.L27:
+.L28:
 	popq	%rbp
 	ret
 	.size	FindCenter, .-FindCenter
@@ -333,7 +344,7 @@ FindCenter:
 	.align 8
 .LC7:
 	.string	"The points don't belong to the one circle\n"
-	.text
+	.section	.text.Output,"ax",@progbits
 	.globl	Output
 	.type	Output, @function
 Output:
@@ -382,12 +393,12 @@ Output:
 	movl	$8, %eax
 	call	fprintf@PLT
 	cmpl	$0, -28(%rbp)
-	je	.L31
+	je	.L32
 	leaq	.LC6(%rip), %rax
-	jmp	.L32
-.L31:
-	leaq	.LC7(%rip), %rax
+	jmp	.L33
 .L32:
+	leaq	.LC7(%rip), %rax
+.L33:
 	movq	-8(%rbp), %rdx
 	movq	%rdx, %rsi
 	movq	%rax, %rdi
@@ -399,7 +410,7 @@ Output:
 	.section	.rodata
 .LC8:
 	.string	"%lf"
-	.text
+	.section	.text.ReadFromFile,"ax",@progbits
 	.globl	ReadFromFile
 	.type	ReadFromFile, @function
 ReadFromFile:
@@ -411,8 +422,8 @@ ReadFromFile:
 	movq	%rsi, -32(%rbp)
 	movq	%rdx, -40(%rbp)
 	movl	$0, -4(%rbp)
-	jmp	.L34
-.L38:
+	jmp	.L35
+.L39:
 	movl	-4(%rbp), %eax
 	cltq
 	leaq	0(,%rax,8), %rdx
@@ -425,7 +436,7 @@ ReadFromFile:
 	movl	$0, %eax
 	call	__isoc99_fscanf@PLT
 	cmpl	$-1, %eax
-	je	.L35
+	je	.L36
 	movl	-4(%rbp), %eax
 	cltq
 	leaq	0(,%rax,8), %rdx
@@ -438,17 +449,17 @@ ReadFromFile:
 	movl	$0, %eax
 	call	__isoc99_fscanf@PLT
 	cmpl	$-1, %eax
-	jne	.L36
-.L35:
-	movl	$2, %eax
-	jmp	.L37
+	jne	.L37
 .L36:
-	addl	$1, -4(%rbp)
-.L34:
-	cmpl	$3, -4(%rbp)
-	jle	.L38
-	movl	$0, %eax
+	movl	$2, %eax
+	jmp	.L38
 .L37:
+	addl	$1, -4(%rbp)
+.L35:
+	cmpl	$3, -4(%rbp)
+	jle	.L39
+	movl	$0, %eax
+.L38:
 	leave
 	ret
 	.size	ReadFromFile, .-ReadFromFile
