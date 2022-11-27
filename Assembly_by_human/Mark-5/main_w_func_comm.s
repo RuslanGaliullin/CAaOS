@@ -125,15 +125,15 @@ GenerateRandomCoordinates:                              # У функции не
 .LC10:
 	.string	"\nCalculation time = %g\n"
 	.text
-	.globl	main
+	.globl	
 	.type	main, @function
 main:
 	endbr64
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 64                                              # Формальные параметры: int argc, char *argv[]
-	mov	DWORD PTR -52[rbp], edi                              # DWORD PTR -52[rbp] - это int argc, который передается через регистр edi
-	mov	QWORD PTR -64[rbp], rsi                              # QWORD PTR -64[rbp] - это char *argv[], который передается через регистр rsi
+	mov	DWORD PTR -52[rbp], edi                              # DWORD PTR -52[rbp] - это int argc, который передается в функцию через регистр edi
+	mov	QWORD PTR -64[rbp], rsi                              # QWORD PTR -64[rbp] - это char *argv[], который передается в функцию через регистр rsi
 	cmp	DWORD PTR -52[rbp], 3                                # DWORD PTR -52[rbp] - это int argc
 	je	.L7
 	cmp	DWORD PTR -52[rbp], 4                                # DWORD PTR -52[rbp] - это int argc
