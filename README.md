@@ -158,7 +158,7 @@
  |-O3|Calculation time = 0.575897|20Кб|333 + 376|[папка](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/asm_optimized/speed/O3)|
  |-Ofast|Calculation time = 0.9144|20Кб|333 + 355|[папка](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/asm_optimized/speed/Ofast)|
  |-Os|Calculation time = 0.887754|20Кб|319 + 325|[папка](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/asm_optimized/speed/Os)|
- |моя программа с регистрами|Calculation time = 2.20377|20Кб| 355 + 495|[папка](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/)|
+ |моя программа с регистрами|Calculation time = 2.20377|20Кб|337 + 477|[папка](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/)|
  
 ### Шаг № 2. Сравнение размера исполняемых файлов и кода на ассемблере
  [Скрины с запусками](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/data/size_opt)
@@ -170,5 +170,5 @@
  | 2 |-ffunction-sections -Wl,--gc-sections|Calculation time = 2.52524|20Кб|384 + 542|[папка](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/asm_optimized/size/size_02)|
  | 3 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|Calculation time = 2.37064|20Кб|352 + 502|[папка](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/asm_optimized/size/size_03)|
  | 4 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 2.3569|16Кб|352 + 502|[папка](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/asm_optimized/size/size_04)|
- | 5 |моя программа с регистрами|Calculation time = 2.20377| 20Кб | 355 + 495|[папка](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/)|
+ | 5 |моя программа с регистрами|Calculation time = 2.20377|20Кб|337 + 477 |[папка](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/)|
 
