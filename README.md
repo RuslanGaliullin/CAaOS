@@ -148,17 +148,17 @@
  ### Шаг № 1. Сравнение времени работы
  [Скрины с запусками](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/data/speed_opt)
  
- [Скрин с размерами файлов](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/speed_opt/compare_size_of_speed_exe.png)
+ ![Скрин с размерами файлов](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/speed_opt/compare_size_of_speed_exe.png)
  | Параметры | Время работы | Размер исполняемого файла | Количество строк (main.s + addition.s) |
  |:--:|:---:|:---:|:---:|
- |-fno-asynchronous-unwind-tables -fno-jump-tables -fno-stack-protector -fno-exceptions -O0|Calculation time = 3.21016|20Кб|449 + 179|
- |-O1|Calculation time = 2.43094|20Кб|445 + 235|
- |-O2|Calculation time = 2.56971|20Кб|425 + 305|
- |-O3|Calculation time = 2.94647|20Кб|437 + 305|
- |-Ofast|Calculation time = 2.54926|20Кб|437 + 305|
- |-O0|Calculation time = 3.22262|20Кб|496 + 210|
- |-Os|Calculation time = 2.91244|20Кб|403 + 222|
- |[моя программа с регистрами](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/)|Calculation time = 2.84221|20Кб| 440 + 174|
+ |-fno-asynchronous-unwind-tables -fno-jump-tables -fno-stack-protector -fno-exceptions -O0|Calculation time = 2.48678|20Кб|351 + 491|
+ |-O0|Calculation time = 2.53151|20Кб|383 + 539|
+ |-O1|Calculation time = 0.909421|20Кб|342 + 377|
+ |-O2|Calculation time = 0.568231|20Кб|333 + 353|
+ |-O3|Calculation time = 0.575897|20Кб|333 + 376|
+ |-Ofast|Calculation time = 0.9144|20Кб|333 + 355|
+ |-Os|Calculation time = 0.887754|20Кб|319 + 325|
+ |[моя программа с регистрами](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/)|Calculation time = 2.20377|20Кб| 355 + 495|
  
 ### Шаг № 2. Сравнение размера исполняемых файлов и кода на ассемблере
  [Скрины с запусками](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_03/data/size_opt)
@@ -166,9 +166,9 @@
  [Скрин с размерами файлов](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/data/size_opt/size_opt_size_files.png)
  | № | Параметры | Время работы | Размер исполняемого файла | Количество строк (main.s + addition.s) |
  |:--:|:--:|:---:|:--:|:--:|
- | 1 |без параметров|Calculation time = 3.20992|20Кб|496 + 210|
- | 2 |-ffunction-sections -Wl,--gc-sections|Calculation time = 3.21151|20Кб|498 + 213|
- | 3 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|Calculation time = 3.19093|20Кб|450 + 181|
- | 4 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 3.19991|16Кб|450 + 181|
- | 5 |[моя программа с регистрами](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/)|Calculation time = 2.84221| 20Кб | 440 + 174|
+ | 1 |без параметров|Calculation time = 2.53106|20Кб|383 + 539|
+ | 2 |-ffunction-sections -Wl,--gc-sections|Calculation time = 2.52524|20Кб|384 + 542|
+ | 3 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables|Calculation time = 2.37064|20Кб|352 + 502|
+ | 4 |-ffunction-sections -Wl,--gc-sections -fno-asynchronous-unwind-tables -Wl,--strip-all|Calculation time = 2.3569|16Кб|352 + 502|
+ | 5 |[моя программа с регистрами](https://github.com/RuslanGaliullin/CAaOS/blob/IHW_03/Assembly_by_human/Mark-6-7/)|Calculation time = 2.20377| 20Кб | 355 + 495|
 
