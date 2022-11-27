@@ -132,14 +132,14 @@ main:
 	push	rbp
 	mov	rbp, rsp
 	sub	rsp, 64                                              # Формальные параметры: int argc, char *argv[]
-	mov	DWORD PTR -52[rbp], edi                              # DWORD PTR -52[rbp] - это int argc
-	mov	QWORD PTR -64[rbp], rsi                              # QWORD PTR -64[rbp] - это char *argv[]
+	mov	DWORD PTR -52[rbp], edi                              # DWORD PTR -52[rbp] - это int argc, который передается через регистр edi
+	mov	QWORD PTR -64[rbp], rsi                              # QWORD PTR -64[rbp] - это char *argv[], который передается через регистр rsi
 	cmp	DWORD PTR -52[rbp], 3                                # DWORD PTR -52[rbp] - это int argc
 	je	.L7
 	cmp	DWORD PTR -52[rbp], 4                                # DWORD PTR -52[rbp] - это int argc
 	je	.L7
 	mov	eax, 0
-	call	errMessage1                                      # Не передаются аргументы
+	call	errMessage1                                          # Не передаются аргументы
 	mov	eax, 1                                               # нет возвращаемого значения
 	jmp	.L8
 .L7:
@@ -150,8 +150,8 @@ main:
 	lea	rdx, .LC2[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	strcmp@PLT                                       # Аргументы char* argv[1], char* .LC2 передаются через регистры rdi, rsi
-	test	eax, eax                                         # возвращаемое значения в eax
+	call	strcmp@PLT                                           # Аргументы char* argv[1], char* .LC2 передаются через регистры rdi, rsi
+	test	eax, eax                                             # возвращаемое значения в eax
 	jne	.L9
 	mov	rax, QWORD PTR -64[rbp]                              # QWORD PTR -64[rbp] - это char *argv[]
 	add	rax, 16                                              # argv[2]
@@ -159,7 +159,7 @@ main:
 	lea	rdx, .LC3[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	fopen@PLT                                       # Аргументы char* argv[2], char* .LC3 передаются через регистры rdi, rsi. Возвращаемое значение в eax
+	call	fopen@PLT                                           # Аргументы char* argv[2], char* .LC3 передаются через регистры rdi, rsi. Возвращаемое значение в eax
 	mov	QWORD PTR -16[rbp], rax                             # QWORD PTR -16[rbp] - FILE *ifst
 	cmp	QWORD PTR -16[rbp], 0
 	jne	.L10
