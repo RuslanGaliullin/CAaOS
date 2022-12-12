@@ -36,3 +36,30 @@
 |*.out -n number [-fo fileout]|*.out -c [-fo fileout]|*.out -f fin [-fo fileout]|*.out -r [-fo fileout]|
 
 - Отмечу, что вывод в консоль присутствует _**всегда**_, а в файл по запросу
+### Шаг № 2. Прогон тестов
+- Тесты запущенны следующими командами:
+
+  * ./main.out -f ./test/test01.in -fo ./test/test01.out
+  * ./main.out -f ./test/test02.in -fo ./test/test02.out
+  * ./main.out -f ./test/test03.in -fo ./test/test03.out
+- Результаты прогонов и входные параметры находятся в [tests](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_04/test). Уточню, что каждый запуск останавливался CTRL+C, потому что по условию у работы больницы не конца
+## На оценку 8
+### Шаг № 1. Генератор случайных чисел
+- Генратор сработает при заупске программы следующей командой:
+<div align="center">*.out -r [-fo fileout]</div>
+- Реализация в коде:
+
+
+```
+#include <random>
+...
+std::random_device rd;
+...
+else if (!strcmp(argv[1], "-r")) {
+    n = rd() % 20;
+}
+```
+### Шаг № 2. Прогон тестов
+- Тест запущенн следующей командой:
+  * ./main.out -r -fo ./test/test_random.out
+- Результаты прогона в [test_random.out](https://github.com/RuslanGaliullin/CAaOS/tree/IHW_04/test/test_random.out). Уточню, что запуск останавливался CTRL+C, потому что по условию у работы больницы не конца
