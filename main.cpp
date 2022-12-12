@@ -53,14 +53,14 @@ void *RegistrationToTheDoc(void *param) {
     message = patientNum->name + " was directed to " + patientNum->doctor + "\n";
     // Конец критической секции
     pthread_mutex_unlock(&query_doc->mutex);
+    // Синхронизация вывода сообщений
+    pthread_mutex_lock(&output_mutex);
     std::cout << message;
     if (is_file_output) {
-      // Синхронизация ввода сообщения в файл
-      pthread_mutex_lock(&output_mutex);
       file_output << message;
       file_output.flush();
-      pthread_mutex_unlock(&output_mutex);
     }
+    pthread_mutex_unlock(&output_mutex);
     // Разбудить потоки-читатели после добавления элемента в буфер
     pthread_cond_broadcast(&query_doc->not_empty);
     sleep(4);
@@ -140,14 +140,14 @@ void *GPConsumer(void *param) {
     message = query_GP->name + " hills " + result.name + "'s stomach\n";
     // Конец критической секции
     pthread_mutex_unlock(&query_GP->mutex);
+    // Синхронизация вывода сообщений
+    pthread_mutex_lock(&output_mutex);
     std::cout << message;
     if (is_file_output) {
-      // Синхронизация ввода сообщения в файл
-      pthread_mutex_lock(&output_mutex);
       file_output << message;
       file_output.flush();
-      pthread_mutex_unlock(&output_mutex);
     }
+    pthread_mutex_unlock(&output_mutex);
     // Разбудить потоки-читатели после добавления элемента в буфер
     pthread_cond_broadcast(&query_GP->not_full);
     sleep(4);
@@ -174,14 +174,14 @@ void *SurgeonConsumer(void *param) {
     message = query_surgeon->name + " hills " + result.name + "'s leg\n";
     // Конец критической секции
     pthread_mutex_unlock(&query_surgeon->mutex);
+    // Синхронизация вывода сообщений
+    pthread_mutex_lock(&output_mutex);
     std::cout << message;
     if (is_file_output) {
-      // Синхронизация ввода сообщения в файл
-      pthread_mutex_lock(&output_mutex);
       file_output << message;
       file_output.flush();
-      pthread_mutex_unlock(&output_mutex);
     }
+    pthread_mutex_unlock(&output_mutex);
     // Разбудить потоки-читатели после добавления элемента в буфер
     pthread_cond_broadcast(&query_surgeon->not_full);
     sleep(4);
@@ -208,14 +208,14 @@ void *DentistConsumer(void *param) {
     message = query_surgeon->name + " hills " + result.name + "'s tooth\n";
     // Конец критической секции
     pthread_mutex_unlock(&query_dentist->mutex);
+    // Синхронизация вывода сообщений
+    pthread_mutex_lock(&output_mutex);
     std::cout << message;
     if (is_file_output) {
-      // Синхронизация ввода сообщения в файл
-      pthread_mutex_lock(&output_mutex);
       file_output << message;
       file_output.flush();
-      pthread_mutex_unlock(&output_mutex);
     }
+    pthread_mutex_unlock(&output_mutex);
     // Разбудить потоки-читатели после добавления элемента в буфер
     pthread_cond_broadcast(&query_dentist->not_full);
     sleep(4);
