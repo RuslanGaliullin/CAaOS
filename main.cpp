@@ -7,6 +7,7 @@
 #include <random>
 #include <unistd.h>
 #include <utility>
+
 // Поток для вывода в файл и флаг его работоспособности
 std::fstream file_output;
 bool is_file_output = false;
@@ -21,6 +22,7 @@ auto query_dentist = new Query("Дантист Георгий");
 auto query_GP = new Query("Педиатр Пересвет");
 // Объявления мьютекса для синхронизации вывода в файл (flush)
 pthread_mutex_t output_mutex;
+
 /// Функция для периодической записи больного из param на прием к ДЕЖУРНЫМ врачам
 /// \param param Это указатель на пациента, который будет записываться
 /// \return
@@ -45,7 +47,7 @@ void *RegistrationToTheDoc(void *param) {
     // Записи в буфер
     query_doc->buf[query_doc->rear] = *patientNum;
     query_doc->rear = (query_doc->rear + 1) % bufSize;
-    ++(query_doc->count);
+    ++query_doc->count;
     // Формирование сообщения о записи пациента
     message = patientNum->name + " was directed to " + patientNum->doctor + "\n";
     // Конец критической секции
@@ -63,6 +65,7 @@ void *RegistrationToTheDoc(void *param) {
     sleep(4);
   }
 }
+
 /// Метод для записи пациента к СПЕЦИАЛИСТУ ДЕЖУРНЫМ ВРАЧОМ
 /// \param patient Указатель на объект пациента, которого надо записать
 void RegistrationToTheSpec(Patient *patient) {
@@ -83,12 +86,13 @@ void RegistrationToTheSpec(Patient *patient) {
   // Запись в общий буфер врача
   queue->buf[queue->rear] = *patient;
   queue->rear = (queue->rear + 1) % bufSize;
-  ++(queue->count);
+  ++queue->count;
   // Конец критической секции
   pthread_mutex_unlock(&queue->mutex);
   // Разбудить потоки-читатели после добавления элемента в буфер(очередь) конкретного врача
   pthread_cond_broadcast(&queue->not_empty);
 }
+
 /// Метод для чтения записей к ДЕЖУРНЫМ ВРАЧАМ
 /// \param param ничего не передается
 /// \return
@@ -98,7 +102,7 @@ void *DoctorConsumer(void *param) {
   while (true) {
     // Изъятие из общего буфера – начало критической секции
     pthread_mutex_lock(&query_doc->mutex);
-    //заснуть, если количество занятых ячеек равно нулю
+    // Заснуть, если количество занятых ячеек равно нулю
     while (query_doc->count == 0) {
       pthread_cond_wait(&query_doc->not_empty, &query_doc->mutex);
     };
@@ -106,14 +110,15 @@ void *DoctorConsumer(void *param) {
     // Вызываем метод для записи пациента к специалисту
     RegistrationToTheSpec(&result);
     query_doc->front = (query_doc->front + 1) % bufSize;
-    query_doc->count--;
+    --query_doc->count;
     // Конец критической секции
     pthread_mutex_unlock(&query_doc->mutex);
-    //разбудить потоки-писатели после получения элемента из буфера
+    // Разбудить потоки-писатели после получения элемента из буфера
     pthread_cond_broadcast(&query_doc->not_full);
     sleep(4);
   }
 }
+
 /// Метод для чтения записей к ПЕДИАТОРУ
 /// \param param ничего не передается
 /// \return
@@ -147,6 +152,7 @@ void *GPConsumer(void *param) {
     sleep(4);
   }
 }
+
 /// Метод для чтения записей к ХИРУРГУ
 /// \param param ничего не передается
 /// \return
@@ -163,7 +169,7 @@ void *SurgeonConsumer(void *param) {
     }
     result = query_surgeon->buf[query_surgeon->front];
     query_surgeon->front = (query_surgeon->front + 1) % bufSize;
-    query_surgeon->count--;// Занятая ячейка стала свободной
+    --query_surgeon->count;// Занятая ячейка стала свободной
     message = query_surgeon->name + " hills " + result.name + "'s leg\n";
     // Конец критической секции
     pthread_mutex_unlock(&query_surgeon->mutex);
@@ -180,6 +186,7 @@ void *SurgeonConsumer(void *param) {
     sleep(4);
   }
 }
+
 /// Метод для чтения записей к СТОМАТОЛОГУ
 /// \param param ничего не передается
 /// \return
@@ -190,7 +197,7 @@ void *DentistConsumer(void *param) {
   while (true) {
     // Изъятие из общего буфера – начало критической секции
     pthread_mutex_lock(&query_dentist->mutex);// Защита операции чтения
-    //заснуть, если количество занятых ячеек равно нулю
+    // Заснуть, если количество занятых ячеек равно нулю
     while (query_dentist->count == 0) {
       pthread_cond_wait(&query_dentist->not_empty, &query_dentist->mutex);
     }
@@ -198,7 +205,7 @@ void *DentistConsumer(void *param) {
     query_dentist->front = (query_dentist->front + 1) % bufSize;
     query_dentist->count--;// Занятая ячейка стала свободной
     message = query_surgeon->name + " hills " + result.name + "'s tooth\n";
-    //конец критической секции
+    // Конец критической секции
     pthread_mutex_unlock(&query_dentist->mutex);
     std::cout << message;
     if (is_file_output) {
@@ -213,6 +220,7 @@ void *DentistConsumer(void *param) {
     sleep(4);
   }
 }
+
 // Метод для вывода сообщения при ошибках входных данных
 void error_message_1() {
   std::cout << "\nInput parameter is passed through argv:"
@@ -222,6 +230,7 @@ void error_message_1() {
                "\n\nInput parameter is passed from file"
                "\n*.out -f fin [-fo fileout] fin - name of the input file, fileout - name of the output file\n";
 };
+
 int main(int argc, char *argv[]) {
   int n = -1;
   // Проверка корректности входных данных
