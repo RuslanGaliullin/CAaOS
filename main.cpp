@@ -228,7 +228,9 @@ void error_message_1() {
                "\n\nInput parameter is passed from console:"
                "\n*.out -c [-fo fileout] fileout - name of the output file"
                "\n\nInput parameter is passed from file"
-               "\n*.out -f fin [-fo fileout] fin - name of the input file, fileout - name of the output file\n";
+               "\n*.out -f fin [-fo fileout] fin - name of the input file, fileout - name of the output file\n"
+               "\n\nInput parameter is created by random generator"
+               "\n*.out -r [-fo fileout] fin - name of the input file, fileout - name of the output file\n";
 };
 
 int main(int argc, char *argv[]) {
@@ -254,6 +256,8 @@ int main(int argc, char *argv[]) {
       }
     } else if (!strcmp(argv[1], "-n") && (argc == 3 || !strcmp(argv[argc - 2], "-fo"))) {
       n = std::stoi(argv[2]);
+    } else if (!strcmp(argv[1], "-r")) {
+      n = rd() % 20;
     } else {
       error_message_1();
       return 1;
