@@ -1,38 +1,25 @@
+#include "patient.h"
+#include "query.h"
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <pthread.h>
 #include <random>
-#include <semaphore.h>
 #include <unistd.h>
 #include <utility>
-const int bufSize = 30;
+// Глобальные ссылки на потоки для вывода в файл и в консоль
+std::ostream &console_output = std::cout;
+std::fstream file_output;
+bool is_file_output = false;
+
+// инициализатор генератора случайных чисел
 std::random_device rd;
-class Patient {
- public:
-  std::string name;
-  std::string doctor;
-  explicit Patient(std::string name, std::string doc) : name(std::move(name)), doctor(std::move(doc)) {
-  }
-  Patient() {}
-};
-class Query {
- public:
-  std::string name;
-  pthread_mutex_t mutex{};
-  pthread_cond_t not_empty;
-  pthread_cond_t not_full;
-  int front;
-  int rear;
-  int count;
-  Patient buf[bufSize]{};
-  explicit Query(std::string name) : name(std::move(name)), front(0), rear(0), count(0) {
-  }
-};
+
+// Инициализация очередей для всех врачей
 auto query_doc = new Query("Дежурный врач");
 auto query_surgeon = new Query("Хирург Максим");
 auto query_dentist = new Query("Дантист Георгий");
 auto query_GP = new Query("Педиатр Пересвет");
-// инициализатор генератора случайных чисел
 
 //
 void *RegistrationToTheDoc(void *param) {
@@ -55,9 +42,13 @@ void *RegistrationToTheDoc(void *param) {
     query_doc->rear = (query_doc->rear + 1) % bufSize;
     ++(query_doc->count);//появилась занятая ячейка
     message = patientNum->name + " was directed to " + patientNum->doctor + "\n";
-    std::cout << message;
+
     //конец критической секции
     pthread_mutex_unlock(&query_doc->mutex);
+    std::cout << message;
+    if (is_file_output) {
+      file_output << message;
+    }
     pthread_cond_broadcast(&query_doc->not_empty);
     //разбудить потоки-читатели после добавления элемента в буфер
     sleep(4);
@@ -125,6 +116,9 @@ void *GPConsumer(void *param) {
     //конец критической секции
     pthread_mutex_unlock(&query_GP->mutex);
     std::cout << message;
+    if (is_file_output) {
+      file_output << message;
+    }
     //разбудить потоки-писатели после получения элемента из буфера
     pthread_cond_broadcast(&query_GP->not_full);
     sleep(4);
@@ -148,6 +142,9 @@ void *SurgeonConsumer(void *param) {
     //конец критической секции
     pthread_mutex_unlock(&query_surgeon->mutex);
     std::cout << message;
+    if (is_file_output) {
+      file_output << message;
+    }
     //разбудить потоки-писатели после получения элемента из буфера
     pthread_cond_broadcast(&query_surgeon->not_full);
     sleep(4);
@@ -172,15 +169,67 @@ void *DentistConsumer(void *param) {
     //конец критической секции
     pthread_mutex_unlock(&query_dentist->mutex);
     std::cout << message;
+    if (is_file_output) {
+      file_output << message;
+    }
     //разбудить потоки-писатели после получения элемента из буфера
     pthread_cond_broadcast(&query_dentist->not_full);
     sleep(4);
   }
 }
-int main() {
-  int n;
-  std::cin >> n;
-  //инициализация мутексов и семафоров
+void error_message_1() {
+  std::cout << "Input parameter is passed through argv:"
+               "\n *.out -n number [-fo fileout] fileout - name of the output file"
+               "\n Input parameter is passed from console:"
+               "\n *.out -c [-fo fileout] fileout - name of the output file"
+               "\n Input parameter is passed from file:\n"
+               "\n *.out -f fin [-fo fileout] fin - name of the input file, fileout - name of the output file\n";
+};
+int main(int argc, char *argv[]) {
+  int n = -1;
+  if (argc < 2 || argc > 5) {
+    error_message_1();
+    return 1;
+  }
+  try {
+    if (!strcmp(argv[1], "-c")) {
+      std::string temp;
+      std::cin >> temp;
+      n = std::stoi(temp);
+    } else if (!strcmp(argv[1], "-f")) {
+      auto fin = std::fstream(argv[2]);
+      if (fin.is_open()) {
+        fin >> n;
+      } else {
+        std::cout << "Impossible to read from the input file\n";
+        return 1;
+      }
+    } else if (!strcmp(argv[1], "-n")) {
+      n = std::stoi(argv[2]);
+    } else {
+      error_message_1();
+      return 1;
+    }
+  } catch (...) {
+    error_message_1();
+    return 1;
+  }
+  if (argc > 3 && !strcmp(argv[argc - 2], "-fo")) {
+    auto fout = std::fstream(argv[argc - 1]);
+    if (fout.is_open()) {
+      file_output = std::move(fout);
+      is_file_output = true;
+    } else {
+      std::cout << "Impossible to write to the output file\n";
+    }
+  } else if (argc > 3) {
+    error_message_1();
+    return 1;
+  }
+  if (n < 0) {
+    std::cout << "Number should be integer equal or greater then 0\n";
+    return 1;
+  }
   pthread_mutex_init(&query_dentist->mutex, nullptr);
   pthread_mutex_init(&query_GP->mutex, nullptr);
   pthread_mutex_init(&query_surgeon->mutex, nullptr);
@@ -199,6 +248,9 @@ int main() {
   for (int i = 0; i < n; ++i) {
     patients[i] = Patient(std::to_string(i), "");
     pthread_create(&threadP[i], nullptr, RegistrationToTheDoc, (void *) (patients + i));
+  }
+  if (is_file_output) {
+    file_output.close();
   }
   pthread_t threadC[4];
   pthread_create(&threadC[0], nullptr, DoctorConsumer, nullptr);
