@@ -7,8 +7,6 @@
 #include <random>
 #include <unistd.h>
 #include <utility>
-// Глобальные ссылки на потоки для вывода в файл и в консоль
-std::ostream &console_output = std::cout;
 std::fstream file_output;
 bool is_file_output = false;
 
