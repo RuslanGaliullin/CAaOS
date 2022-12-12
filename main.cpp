@@ -190,12 +190,12 @@ void *DentistConsumer(void *param) {
   }
 }
 void error_message_1() {
-  std::cout << "Input parameter is passed through argv:"
-               "\n *.out -n number [-fo fileout] fileout - name of the output file"
-               "\n Input parameter is passed from console:"
-               "\n *.out -c [-fo fileout] fileout - name of the output file"
-               "\n Input parameter is passed from file:\n"
-               "\n *.out -f fin [-fo fileout] fin - name of the input file, fileout - name of the output file\n";
+  std::cout << "\nInput parameter is passed through argv:"
+               "\n*.out -n number [-fo fileout] fileout - name of the output file"
+               "\n\nInput parameter is passed from console:"
+               "\n*.out -c [-fo fileout] fileout - name of the output file"
+               "\n\nInput parameter is passed from file"
+               "\n*.out -f fin [-fo fileout] fin - name of the input file, fileout - name of the output file\n";
 };
 int main(int argc, char *argv[]) {
   int n = -1;
@@ -204,11 +204,11 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   try {
-    if (!strcmp(argv[1], "-c")) {
+    if (!strcmp(argv[1], "-c") && (argc == 2 || !strcmp(argv[argc - 2], "-fo"))) {
       std::string temp;
       std::cin >> temp;
       n = std::stoi(temp);
-    } else if (!strcmp(argv[1], "-f")) {
+    } else if (!strcmp(argv[1], "-f") && (argc == 3 || !strcmp(argv[argc - 2], "-fo"))) {
       auto fin = std::fstream(argv[2]);
       if (fin.is_open()) {
         fin >> n;
@@ -216,7 +216,7 @@ int main(int argc, char *argv[]) {
         std::cout << "Impossible to read from the input file\n";
         return 1;
       }
-    } else if (!strcmp(argv[1], "-n")) {
+    } else if (!strcmp(argv[1], "-n") && (argc == 3 || !strcmp(argv[argc - 2], "-fo"))) {
       n = std::stoi(argv[2]);
     } else {
       error_message_1();
@@ -227,8 +227,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   if (argc > 3 && !strcmp(argv[argc - 2], "-fo")) {
-    std::cout << argv[argc - 1];
-    file_output.open(argv[argc - 1], std::ios::out | std::ios::app);
+    file_output.open(argv[argc - 1], std::ios::out);
     if (file_output.is_open()) {
       is_file_output = true;
     } else {
