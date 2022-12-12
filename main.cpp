@@ -230,7 +230,7 @@ void error_message_1() {
                "\n\nInput parameter is passed from file"
                "\n*.out -f fin [-fo fileout] fin - name of the input file, fileout - name of the output file\n"
                "\n\nInput parameter is created by random generator"
-               "\n*.out -r [-fo fileout] fin - name of the input file, fileout - name of the output file\n";
+               "\n*.out -r [-fo fileout] fileout - name of the output file\n";
 };
 
 int main(int argc, char *argv[]) {
