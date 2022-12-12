@@ -20,7 +20,7 @@ auto query_doc = new Query("Дежурный врач");
 auto query_surgeon = new Query("Хирург Максим");
 auto query_dentist = new Query("Дантист Георгий");
 auto query_GP = new Query("Педиатр Пересвет");
-
+pthread_mutex_t output_mutex;
 //
 void *RegistrationToTheDoc(void *param) {
   auto *patientNum = (Patient *) param;
@@ -42,12 +42,14 @@ void *RegistrationToTheDoc(void *param) {
     query_doc->rear = (query_doc->rear + 1) % bufSize;
     ++(query_doc->count);//появилась занятая ячейка
     message = patientNum->name + " was directed to " + patientNum->doctor + "\n";
-
     //конец критической секции
     pthread_mutex_unlock(&query_doc->mutex);
     std::cout << message;
     if (is_file_output) {
+      pthread_mutex_lock(&output_mutex);
       file_output << message;
+      file_output.flush();
+      pthread_mutex_unlock(&output_mutex);
     }
     pthread_cond_broadcast(&query_doc->not_empty);
     //разбудить потоки-читатели после добавления элемента в буфер
@@ -117,7 +119,10 @@ void *GPConsumer(void *param) {
     pthread_mutex_unlock(&query_GP->mutex);
     std::cout << message;
     if (is_file_output) {
+      pthread_mutex_lock(&output_mutex);
       file_output << message;
+      file_output.flush();
+      pthread_mutex_unlock(&output_mutex);
     }
     //разбудить потоки-писатели после получения элемента из буфера
     pthread_cond_broadcast(&query_GP->not_full);
@@ -143,7 +148,10 @@ void *SurgeonConsumer(void *param) {
     pthread_mutex_unlock(&query_surgeon->mutex);
     std::cout << message;
     if (is_file_output) {
+      pthread_mutex_lock(&output_mutex);
       file_output << message;
+      file_output.flush();
+      pthread_mutex_unlock(&output_mutex);
     }
     //разбудить потоки-писатели после получения элемента из буфера
     pthread_cond_broadcast(&query_surgeon->not_full);
@@ -167,10 +175,14 @@ void *DentistConsumer(void *param) {
     query_dentist->count--;                                     //занятая ячейка стала свободной
     message = query_surgeon->name + " hills " + result.name + "'s tooth\n";
     //конец критической секции
+
     pthread_mutex_unlock(&query_dentist->mutex);
     std::cout << message;
     if (is_file_output) {
+      pthread_mutex_lock(&output_mutex);
       file_output << message;
+      file_output.flush();
+      pthread_mutex_unlock(&output_mutex);
     }
     //разбудить потоки-писатели после получения элемента из буфера
     pthread_cond_broadcast(&query_dentist->not_full);
@@ -215,9 +227,9 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   if (argc > 3 && !strcmp(argv[argc - 2], "-fo")) {
-    auto fout = std::fstream(argv[argc - 1]);
-    if (fout.is_open()) {
-      file_output = std::move(fout);
+    std::cout << argv[argc - 1];
+    file_output.open(argv[argc - 1], std::ios::out | std::ios::app);
+    if (file_output.is_open()) {
       is_file_output = true;
     } else {
       std::cout << "Impossible to write to the output file\n";
@@ -230,6 +242,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Number should be integer equal or greater then 0\n";
     return 1;
   }
+  pthread_mutex_init(&output_mutex, nullptr);
   pthread_mutex_init(&query_dentist->mutex, nullptr);
   pthread_mutex_init(&query_GP->mutex, nullptr);
   pthread_mutex_init(&query_surgeon->mutex, nullptr);
@@ -249,14 +262,14 @@ int main(int argc, char *argv[]) {
     patients[i] = Patient(std::to_string(i), "");
     pthread_create(&threadP[i], nullptr, RegistrationToTheDoc, (void *) (patients + i));
   }
-  if (is_file_output) {
-    file_output.close();
-  }
   pthread_t threadC[4];
   pthread_create(&threadC[0], nullptr, DoctorConsumer, nullptr);
   pthread_create(&threadC[1], nullptr, DoctorConsumer, nullptr);
   pthread_create(&threadC[2], nullptr, DentistConsumer, nullptr);
   pthread_create(&threadC[3], nullptr, SurgeonConsumer, nullptr);
   GPConsumer(nullptr);
+  if (is_file_output) {
+    file_output.close();
+  }
   return 0;
 }
