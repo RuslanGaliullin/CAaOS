@@ -1,76 +1,219 @@
-#include "addition.h"
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-double X[4] = {0, 0, 0, 0};
-double Y[4] = {0, 0, 0, 0};
-void errMessage1() {
-  printf("incorrect command line!\n"
-         "  Waited:\n"
-         "     command -c outfile"
-         "     in console: x0 y0 x1 y1 x2 y2 x3 y4"
-         "  Or:\n"
-         "     command -r outfile"
-         "  Or:\n"
-         "     command -f infile outfile\n");
-}
-void errMessage2() {
-  printf("incorrect data in the input file or in console!\n"
-         "  Waited:\n"
-         "     x0 y0 x1 y1 x2 y2 x3 y4\n");
-}
-void GenerateRandomCoordinates() {
-  for (int i = 0; i < 4; ++i) {
-    X[i] = rand() % 100;
-    Y[i] = rand() % 100;
+#include <algorithm>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
+#include <pthread.h>
+#include <random>
+#include <semaphore.h>
+#include <unistd.h>
+#include <utility>
+const int bufSize = 10;
+std::random_device rd;
+class Patient {
+ public:
+  std::string name;
+  std::string doctor;
+  explicit Patient(std::string name, std::string doc) : name(std::move(name)), doctor(std::move(doc)) {
   }
-}
-int main(int argc, char *argv[]) {
-  if (argc != 3 && argc != 4) {
-    errMessage1();
-    return 1;
+  Patient() {}
+};
+class Query {
+ public:
+  std::string name;
+  std::string name2;
+  pthread_mutex_t mutex{};
+  sem_t empty;
+  sem_t full;//семафор, отображающий насколько полон буфер
+  int front;
+  int rear;
+  int count;
+  Patient buf[bufSize]{};
+  explicit Query(std::string name) : name(std::move(name)), front(0), rear(0), count(0) {
   }
-  int result = 0;
-  if (!strcmp(argv[1], "-f")) {
-    FILE *ifst = fopen(argv[2], "r");
-    if (ifst == NULL) {
-      printf("Cannot open input file %s\n", argv[2]);
-      return 3;
+};
+auto query_doc = new Query("Дежурный врач");
+auto query_surgeon = new Query("Хирург Максим");
+auto query_dentist = new Query("Дантист Георгий");
+auto query_GP = new Query("Педиатр Пересвет");
+pthread_mutex_t output_mutex;
+// инициализатор генератора случайных чисел
+
+//
+void *RegistrationToTheDoc(void *param) {
+  auto *patientNum = (Patient *) param;
+  while (true) {
+    if (rd() % 3 == 0) {
+      patientNum->doctor = "surgeon";
+    } else if (rd() % 3 == 1) {
+      patientNum->doctor = "dentist";
+    } else {
+      patientNum->doctor = "GP";
     }
-    if (ReadFromFile(ifst, X, Y)) {
-      errMessage2();
-      return 2;
-    }
-    fclose(ifst);
-  } else if (!strcmp(argv[1], "-c")) {
-    if (ReadFromFile(stdin, X, Y)) {
-      errMessage2();
-      return 2;
-    }
-  } else if (!strcmp(argv[1], "-r")) {
-    srand((unsigned int) (time(NULL)));
-    GenerateRandomCoordinates();
-  } else {
-    errMessage1();
-    return 1;
+    pthread_mutex_lock(&query_doc->mutex);//защита операции записи
+    sem_wait(&query_doc->empty);
+    //запись в общий буфер
+    query_doc->buf[query_doc->rear] = *patientNum;
+    query_doc->rear = (query_doc->rear + 1) % bufSize;
+    ++(query_doc->count);//появилась занятая ячейка
+    pthread_mutex_lock(&output_mutex);
+    std::cout << patientNum->name << " was directed to " << patientNum->doctor << std::endl;
+    pthread_mutex_unlock(&output_mutex);
+    sem_post(&query_doc->full);
+    //конец критической секции
+    pthread_mutex_unlock(&query_doc->mutex);
+    //разбудить потоки-читатели после добавления элемента в буфер
+    std::cout << "Ended righting\n";
+    sleep(10);
   }
-  clock_t start = clock();
-  for (int i = 0; i < 60000000; ++i) {
-    result = CheckCircle(X, Y);
+}
+//int RegistrationToTheSpec(Patient *patient) {
+//  Query *queue;
+//  if (patient->doctor == "surgeon") {
+//    queue = query_surgeon;
+//  } else if (patient->doctor == "dentist") {
+//    queue = query_dentist;
+//  } else {
+//    queue = query_GP;
+//  }
+//  pthread_mutex_lock(&queue->mutex);//защита операции записи
+//  while (queue->count == bufSize) {
+//    pthread_cond_wait(&queue->not_full, &queue->mutex);
+//    sleep(5);
+//  };
+//  //запись в общий буфер
+//  queue->buf[queue->rear] = *patient;
+//  queue->rear = (queue->rear + 1) % bufSize;
+//  ++(queue->count);//появилась занятая ячейка
+//  //конец критической секции
+//  pthread_mutex_unlock(&queue->mutex);
+//  //разбудить потоки-читатели после добавления элемента в буфер
+//  pthread_cond_broadcast(&queue->not_empty);
+//  return 0;
+//}
+void *DoctorConsumer(void *param) {
+  Patient result;
+  while (true) {
+    //извлечь элемент из буфера
+    pthread_mutex_lock(&query_doc->mutex);//защита операции чтения
+    //заснуть, если количество занятых ячеек равно нулю
+    std::cout << "Not empty!!\n";
+    sem_wait(&query_doc->full);
+    //изъятие из общего буфера – начало критической секции
+    result = query_doc->buf[query_doc->front];
+    query_doc->front = (query_doc->front + 1) % bufSize;//критическая секция
+    query_doc->count--;                                 //занятая ячейка стала свободной//конец критической секции
+    sem_post(&query_doc->empty);
+    pthread_mutex_unlock(&query_doc->mutex);
+    //разбудить потоки-писатели после получения элемента из буфера
+    //pthread_cond_broadcast(&query_doc->not_full);
+    sleep(10);
   }
-  printf("\n");
-  clock_t end = clock();
-  double calcTime = ((double) (end - start)) / (CLOCKS_PER_SEC + 1.0);
-  Output(stdout, X, Y, result);
-  FILE *ofst = fopen(argv[argc - 1], "w");
-  if (ofst == NULL) {
-    printf("Cannot open %s to write\n", argv[argc - 1]);
-    return 1;
+  return nullptr;
+}
+//void *GPConsumer(void *param) {
+//  Patient result;
+//  while (true) {
+//    //извлечь элемент из буфера
+//    pthread_mutex_lock(&query_GP->mutex);//защита операции чтения
+//
+//    //заснуть, если количество занятых ячеек равно нулю
+//    while (query_GP->count == 0) {
+//      pthread_cond_wait(&query_GP->not_empty, &query_GP->mutex);
+//    }
+//    //изъятие из общего буфера – начало критической секции
+//    result = query_GP->buf[query_GP->front];
+//    query_GP->front = (query_GP->front + 1) % bufSize;//критическая секция
+//    query_GP->count--;                                //занятая ячейка стала свободной
+//    pthread_mutex_lock(&output_mutex);
+//    std::cout << query_GP->name << " hill " << result.name << "'s stomach" << std::endl;
+//    pthread_mutex_unlock(&output_mutex);
+//    //конец критической секции
+//    pthread_mutex_unlock(&query_GP->mutex);
+//    //разбудить потоки-писатели после получения элемента из буфера
+//    pthread_cond_broadcast(&query_GP->not_full);
+//    sleep(10);
+//  }
+//}
+//void *SurgeonConsumer(void *param) {
+//  Patient result;
+//  while (true) {
+//    //извлечь элемент из буфера
+//    pthread_mutex_lock(&query_surgeon->mutex);//защита операции чтения
+//    //заснуть, если количество занятых ячеек равно нулю
+//    while (query_surgeon->count == 0) {
+//      pthread_cond_wait(&query_surgeon->not_empty, &query_surgeon->mutex);
+//    }
+//    //изъятие из общего буфера – начало критической секции
+//    result = query_surgeon->buf[query_surgeon->front];
+//    query_surgeon->front = (query_surgeon->front + 1) % bufSize;//критическая секция
+//    query_surgeon->count--;                                     //занятая ячейка стала свободной
+//    pthread_mutex_lock(&output_mutex);
+//    std::cout << query_surgeon->name << " hill " << result.name << "'s leg" << std::endl;
+//    pthread_mutex_unlock(&output_mutex);
+//    //конец критической секции
+//    pthread_mutex_unlock(&query_surgeon->mutex);
+//    //разбудить потоки-писатели после получения элемента из буфера
+//    pthread_cond_broadcast(&query_surgeon->not_full);
+//    sleep(10);
+//  }
+//}
+//void *DentistConsumer(void *param) {
+//  Patient result;
+//  while (true) {
+//    //извлечь элемент из буфера
+//    pthread_mutex_lock(&query_dentist->mutex);//защита операции чтения
+//
+//    //заснуть, если количество занятых ячеек равно нулю
+//    while (query_dentist->count == 0) {
+//      pthread_cond_wait(&query_dentist->not_empty, &query_dentist->mutex);
+//    }
+//
+//    //изъятие из общего буфера – начало критической секции
+//    result = query_dentist->buf[query_dentist->front];
+//    query_dentist->front = (query_dentist->front + 1) % bufSize;//критическая секция
+//    query_dentist->count--;                                     //занятая ячейка стала свободной
+//    pthread_mutex_lock(&output_mutex);
+//    std::cout << query_dentist->name << " hill " << result.name << "'s tooth" << std::endl;
+//    pthread_mutex_unlock(&output_mutex);
+//    //конец критической секции
+//    pthread_mutex_unlock(&query_dentist->mutex);
+//    //разбудить потоки-писатели после получения элемента из буфера
+//    pthread_cond_broadcast(&query_dentist->not_full);
+//    sleep(10);
+//  }
+//}
+int main() {
+  int n;
+  std::cin >> n;
+
+  //инициализация мутексов и семафоров
+  pthread_mutex_init(&output_mutex, nullptr);
+  pthread_mutex_init(&query_dentist->mutex, nullptr);
+  pthread_mutex_init(&query_GP->mutex, nullptr);
+  pthread_mutex_init(&query_surgeon->mutex, nullptr);
+  pthread_mutex_init(&query_doc->mutex, nullptr);
+  //запуск производителей
+  pthread_t threadP[n];
+  Patient patients[n];
+  for (int i = 0; i < n; i++) {
+    patients[i] = Patient(std::to_string(i), "");
+    pthread_create(&threadP[i], nullptr, RegistrationToTheDoc, (void *) (patients + i));
   }
-  fprintf(stdout, "\nCalculation time = %g\n", calcTime);
-  Output(ofst, X, Y, result);
-  fprintf(ofst, "\nCalculation time = %g\n", calcTime);
-  fclose(ofst);
+  pthread_t threadC[5];
+  pthread_create(&threadC[0], nullptr, DoctorConsumer, nullptr);
+  pthread_create(&threadC[1], nullptr, DoctorConsumer, nullptr);
+
+  //  pthread_create(&threadC[2], nullptr, DentistConsumer, nullptr);
+  //  pthread_create(&threadC[3], nullptr, SurgeonConsumer, nullptr);
+  //  pthread_create(&threadC[4], nullptr, GPConsumer, nullptr);
+  pthread_join(threadC[0], nullptr);
+  pthread_join(threadC[1], nullptr);
+  pthread_join(threadC[2], nullptr);
+  pthread_join(threadC[3], nullptr);
+  pthread_join(threadC[4], nullptr);
+  pthread_join(threadP[0], nullptr);
+  pthread_join(threadP[1], nullptr);
+  pthread_join(threadP[2], nullptr);
   return 0;
 }
 
